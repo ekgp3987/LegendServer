@@ -65,7 +65,7 @@ void Room::ExcuteAfterTime(SendBufferRef sendBuffer, uint64 milliSeconds)
 	flag.exchange(false);
 }
 
-void Room::GameStart(SendBufferRef sendBuffer, uint64 milliSeconds)
+void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 {
 	WRITE_LOCK;
 	bool success = true;
