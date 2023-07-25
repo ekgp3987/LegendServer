@@ -17,6 +17,9 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	PacketHeader header;
 	br.Peek(&header);
 
+	if (header.id == C_PICK_CHAMPION_AND_START)
+		int a = 0;
+
 	switch (header.id)
 	{
 	case C_LOGIN:
@@ -135,7 +138,8 @@ void ClientPacketHandler::Handle_C_PICK_FACTION(PacketSessionRef& session, BYTE*
 
 	GRoom.Broadcast(sendBuffer, nullptr);
 
-	GRoom.GameStart(sendBuffer,3);
+	if(success == true)
+		GRoom.GameStart(sendBuffer,3000);
 }
 
 void ClientPacketHandler::Handle_C_PICK_CHAMPION_AND_START(PacketSessionRef& session, BYTE* buffer, int32 len)

@@ -66,13 +66,11 @@ void Room::ExcuteAfterTime(SendBufferRef sendBuffer, uint64 milliSeconds)
 }
 
 void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
-{
-	WRITE_LOCK;
-	bool success = true;
-
-	Sleep(milliSeconds);
-
-	int64 playerNum = GRoom.GetPlayerSize();
+{	
+	thread t([=]() {
+		Sleep(milliSeconds);
+		bool success = true;
+		int64 playerNum = GRoom.GetPlayerSize();
 	map<uint64, PlayerRef> players = GRoom.GetPlayers();
 
 	//챔피언을 픽 안한 사람이 있으면 게임 시작 안함.
@@ -84,7 +82,7 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	PKT_S_GAME_START_WRITE pktWriter(success);
 
 	PKT_S_GAME_START_WRITE::PlayerInfoList playerInfoList = pktWriter.ReservePlayerInfoList(playerNum);
-	
+
 
 	//플레이어들의 초기 위치값 설정
 	vector<PlayerMove> playerMove;
@@ -110,14 +108,14 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 		playerInfoList[i].champion = p.second->GetChampionType();
 		playerInfoList[i].faction = p.second->GetPlayerFaction();
 		playerInfoList[i].id = p.second->GetPlayerId();
-		playerInfoList[i].posInfo = playerMove[i]; 
+		playerInfoList[i].posInfo = playerMove[i];
 
 		//플레이어 문자열을 안에 넣음
 		int64 nickNameSize = p.second->GetName().size();
 		wstring nickName = p.second->GetName();
 		PKT_S_GAME_START_WRITE::NickNameList nick = pktWriter.ReserveNickNameList(&playerInfoList[i], nickNameSize);
 		for (int j = 0; j < nickNameSize; j++) {
-			nick[j] = {nickName[j]};
+			nick[j] = { nickName[j] };
 		}
 		i++;
 	}
@@ -125,4 +123,7 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	Broadcast(sendBuffer, nullptr);
+		});
+
+	t.detach();
 }

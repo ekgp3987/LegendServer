@@ -557,7 +557,7 @@ public:
 
 		_pkt = _bw.Reserve<PKT_S_GAME_START>();
 		_pkt->packetSize = 0; // To Fill
-		_pkt->packetId = S_PICK_CHAMPION_AND_START;
+		_pkt->packetId = S_GAME_START;
 		_pkt->success = _success;
 	}
 
