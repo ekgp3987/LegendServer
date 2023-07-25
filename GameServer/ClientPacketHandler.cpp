@@ -17,7 +17,7 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	PacketHeader header;
 	br.Peek(&header);
 
-	if (header.id == C_PICK_CHAMPION_AND_START)
+	if (header.id == C_PICK_CHAMPION)
 		int a = 0;
 
 	switch (header.id)
@@ -28,8 +28,8 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	case C_PICK_FACTION:
 		Handle_C_PICK_FACTION(session, buffer, len);
 		break;
-	case C_PICK_CHAMPION_AND_START:
-		Handle_C_PICK_CHAMPION_AND_START(session, buffer, len);
+	case C_PICK_CHAMPION:
+		Handle_C_PICK_CHAMPION(session, buffer, len);
 		break;
 	case C_MOVE:
 		Handle_C_MOVE(session, buffer, len);
@@ -142,15 +142,15 @@ void ClientPacketHandler::Handle_C_PICK_FACTION(PacketSessionRef& session, BYTE*
 		GRoom.GameStart(sendBuffer,3000);
 }
 
-void ClientPacketHandler::Handle_C_PICK_CHAMPION_AND_START(PacketSessionRef& session, BYTE* buffer, int32 len)
+void ClientPacketHandler::Handle_C_PICK_CHAMPION(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
 	BufferReader br(buffer, len);
 
-	cout << "Handle_C_PICK_CHAMPION_AND_START에 진입함" << endl;
+	cout << "Handle_C_PICK_CHAMPION에 진입함" << endl;
 
-	PKT_C_PICK_CHAMPION_AND_START* pkt = reinterpret_cast<PKT_C_PICK_CHAMPION_AND_START*>(buffer);
+	PKT_C_PICK_CHAMPION* pkt = reinterpret_cast<PKT_C_PICK_CHAMPION*>(buffer);
 
 	if (pkt->Validate() == false)
 		return;
@@ -163,7 +163,7 @@ void ClientPacketHandler::Handle_C_PICK_CHAMPION_AND_START(PacketSessionRef& ses
 	if (GRoom.GetPlayerSize() < 5)
 		success = true;
 
-	PKT_S_PICK_CHAMPION_AND_START_WRITE pktWriter(success, gameSession->GetPlayer()->GetPlayerId(), pkt->champion);
+	PKT_S_PICK_CHAMPION_WRITE pktWriter(success, gameSession->GetPlayer()->GetPlayerId(), pkt->champion);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
