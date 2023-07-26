@@ -6,6 +6,15 @@ enum class FactionType
 {
     BLUE = 0,
     RED = 1,
+    END = 2,
+};
+
+enum class Object_Type {
+    PLAYER,
+    MINION,
+    TOWER,
+    MONSTER,
+    END,
 };
 
 enum WaitingStatus
@@ -63,8 +72,10 @@ struct PlayerInfoPacket
     uint64  id;
     FactionType faction;
     ChampionType champion;
+    bool host;
 
     PlayerMove posInfo;
+
 
     uint16 nickNameOffset;
     uint16 nickNameCount;

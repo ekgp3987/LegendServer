@@ -9,7 +9,7 @@ Room GRoom;
 
 void Room::BlueEnter(PlayerRef player, GameSessionRef session)
 {
-	uint64 currentPlayerId = session->GetPlayer()->GetPlayerId();
+	uint64 currentPlayerId = session->GetPlayer()->GetObjectId();
 	WRITE_LOCK;
 		_bluePlayers[currentPlayerId] = player;
 		_allPlayers[currentPlayerId] = player;
@@ -18,7 +18,7 @@ void Room::BlueEnter(PlayerRef player, GameSessionRef session)
 
 void Room::RedEnter(PlayerRef player, GameSessionRef session)
 {
-	uint64 currentPlayerId = session->GetPlayer()->GetPlayerId();
+	uint64 currentPlayerId = session->GetPlayer()->GetObjectId();
 	WRITE_LOCK;
 		_redPlayers[currentPlayerId] = player;
 		_allPlayers[currentPlayerId] = player;
@@ -27,11 +27,13 @@ void Room::RedEnter(PlayerRef player, GameSessionRef session)
 
 void Room::Leave(PlayerRef player, GameSessionRef session)
 {
-	uint64 currentPlayerId = session->GetPlayer()->GetPlayerId();
+	uint64 currentPlayerId = session->GetPlayer()->GetObjectId();
 	WRITE_LOCK;
 		_bluePlayers.erase(currentPlayerId);
 		_redPlayers.erase(currentPlayerId);
 		_allPlayers.erase(currentPlayerId);
+
+
 
 		//패킷을 생성해서 나갔다는 것을 모두에게 보여줘야 함.
 }
@@ -106,9 +108,10 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	int i = 0;
 	for (auto& p : players) {
 		playerInfoList[i].champion = p.second->GetChampionType();
-		playerInfoList[i].faction = p.second->GetPlayerFaction();
-		playerInfoList[i].id = p.second->GetPlayerId();
+		playerInfoList[i].faction = p.second->GetFaction();
+		playerInfoList[i].id = p.second->GetObjectId();
 		playerInfoList[i].posInfo = playerMove[i];
+		playerInfoList[i].host = p.second->GetHost();
 
 		//플레이어 문자열을 안에 넣음
 		int64 nickNameSize = p.second->GetName().size();

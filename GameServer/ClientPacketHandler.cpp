@@ -62,15 +62,12 @@ void ClientPacketHandler::Handle_C_LOGIN(PacketSessionRef& session, BYTE* buffer
 	
 	wcout << "닉네임은 " << resultNickName << "입니다." << endl;
 
-	static Atomic<uint64> idGenerator = 1;
-
 	bool success = true;
 	FactionType faction = FactionType::BLUE;
 
 	//플레이어 생성	
 	
 		PlayerRef playerRef = MakeShared<Player>();
-		playerRef->SetPlayerId(idGenerator);
 		playerRef->SetName(resultNickName);
 		playerRef->SetOwnerSession(gameSession);
 		playerRef->SetOwnerRoom(&GRoom);
@@ -80,25 +77,32 @@ void ClientPacketHandler::Handle_C_LOGIN(PacketSessionRef& session, BYTE* buffer
 		if (GRoom.GetBluePlayerSize() > GRoom.GetRedPlayerSize()) {
 			GRoom.RedEnter(playerRef, gameSession);
 			faction = FactionType::RED;
-			playerRef->SetPlayerFaction(faction);
+			playerRef->SetFaction(faction);
 		}
 		else if (GRoom.GetRedPlayerSize() >= GRoom.GetBluePlayerSize()) {
 			GRoom.BlueEnter(playerRef, gameSession);
 			faction = FactionType::BLUE;
-			playerRef->SetPlayerFaction(faction);
+			playerRef->SetFaction(faction);
 		}
 	
 	
 	uint64 playerNum = GRoom.GetPlayerSize();
 	if (playerNum > 4)
 		success = false;
-	PKT_S_LOGIN_WRITE pktWriter(success, idGenerator, faction);
+	
+	bool host = false;
+	if (playerNum == 1)
+		host = true;
+
+	playerRef->SetHost(host);
+
+	PKT_S_LOGIN_WRITE pktWriter(success, playerRef->GetObjectId(), faction);
 	PKT_S_LOGIN_WRITE::PlayerList playerList = pktWriter.ReservePlayerList(playerNum);
 	map<uint64, PlayerRef> players = GRoom.GetPlayers();
 	int i = 0;
 
 	for (auto &p : players) {
-		playerList[i] = { p.second->GetPlayerId(), p.second->GetPlayerFaction()};
+		playerList[i] = { p.second->GetObjectId(), p.second->GetFaction(), p.second->GetHost()};
 		wstring playerNickName = p.second->GetName();
 		PKT_S_LOGIN_WRITE::NickNameList nick = pktWriter.ReserveNickNameList(&playerList[i], playerNickName.length());
 		for (int j = 0; j < playerNickName.length(); j++) {
@@ -106,8 +110,6 @@ void ClientPacketHandler::Handle_C_LOGIN(PacketSessionRef& session, BYTE* buffer
 		}
 		i++;
 	}
-
-	idGenerator++;
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
@@ -163,7 +165,7 @@ void ClientPacketHandler::Handle_C_PICK_CHAMPION(PacketSessionRef& session, BYTE
 	if (GRoom.GetPlayerSize() < 5)
 		success = true;
 
-	PKT_S_PICK_CHAMPION_WRITE pktWriter(success, gameSession->GetPlayer()->GetPlayerId(), pkt->champion);
+	PKT_S_PICK_CHAMPION_WRITE pktWriter(success, gameSession->GetPlayer()->GetObjectId(), pkt->champion);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
@@ -185,7 +187,7 @@ void ClientPacketHandler::Handle_C_MOVE(PacketSessionRef& session, BYTE* buffer,
 
 	PlayerMove playerMove = pkt->playerMove;
 
-	PKT_S_MOVE_WRITE pktWriter(gameSession->GetPlayer()->GetPlayerId(), playerMove);
+	PKT_S_MOVE_WRITE pktWriter(gameSession->GetPlayer()->GetObjectId(), playerMove);
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	GRoom.Broadcast(sendBuffer, nullptr);

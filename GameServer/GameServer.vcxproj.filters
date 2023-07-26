@@ -10,14 +10,17 @@
     <Filter Include="GameContents">
       <UniqueIdentifier>{92b261c4-ad56-4a55-be68-a762209f1b16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="GameContents\Player">
-      <UniqueIdentifier>{4d34dfd4-2d25-4ac5-b56c-f2831f5af731}</UniqueIdentifier>
-    </Filter>
     <Filter Include="GameContents\Room">
       <UniqueIdentifier>{6790f696-2c47-4e58-81ea-1aedee46760a}</UniqueIdentifier>
     </Filter>
     <Filter Include="GameContents\Manager">
       <UniqueIdentifier>{8dde1c51-9584-4944-91cb-bee9bd9027a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameContents\Object">
+      <UniqueIdentifier>{839d6756-c0db-4b47-ba93-9d3d5e4e1eb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameContents\Object\Player">
+      <UniqueIdentifier>{4d34dfd4-2d25-4ac5-b56c-f2831f5af731}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -40,7 +43,7 @@
       <Filter>GameContents\Room</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>GameContents\Player</Filter>
+      <Filter>GameContents\Object\Player</Filter>
     </ClCompile>
     <ClCompile Include="PlayerManager.cpp">
       <Filter>GameContents\Manager</Filter>
@@ -50,6 +53,9 @@
     </ClCompile>
     <ClCompile Include="ServerFunc.cpp">
       <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>GameContents\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -69,7 +75,7 @@
       <Filter>GameContents\Room</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>GameContents\Player</Filter>
+      <Filter>GameContents\Object\Player</Filter>
     </ClInclude>
     <ClInclude Include="PlayerManager.h">
       <Filter>GameContents\Manager</Filter>
@@ -79,6 +85,9 @@
     </ClInclude>
     <ClInclude Include="ServerFunc.h">
       <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>GameContents\Object</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
