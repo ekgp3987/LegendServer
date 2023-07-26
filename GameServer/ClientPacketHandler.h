@@ -21,6 +21,8 @@ enum
 
 	C_MOVE = 10,
 	S_MOVE = 11,
+
+	S_SPAWN_OBJECT = 12,
 };
 
 class ClientPacketHandler
@@ -414,6 +416,29 @@ struct PKT_S_MOVE
 };
 #pragma pack()
 
+#pragma pack(1)
+struct PKT_S_SPAWN_OBJECT {
+	uint16 packetSize;
+	uint16 packetId;
+	uint64 objectId;
+	ObjectType objectType;
+	FactionType factionType;
+
+	bool Validate()
+	{
+		uint32 size = 0;
+		size += sizeof(PKT_S_SPAWN_OBJECT);
+		if (packetSize < size)
+			return false;
+
+		if (size != packetSize)
+			return false;
+
+		return true;
+	}
+};
+#pragma pack()
+
 //===============================
 // 이 밑은 패킷 Write 클래스 모음입니다. |
 // ==============================
@@ -626,7 +651,37 @@ private:
 };
 #pragma pack()
 
+#pragma pack(1)
+class PKT_S_SPAWN_OBJECT_WRITE {
+public:
+	PKT_S_SPAWN_OBJECT_WRITE(uint64 _objectId, ObjectType _objectType, FactionType _factionType) {
+		_sendBuffer = GSendBufferManager->Open(4096);
+		// 초기화
+		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
 
+		_pkt = _bw.Reserve<PKT_S_SPAWN_OBJECT>();
+		_pkt->packetSize = 0; // To Fill
+		_pkt->packetId = S_SPAWN_OBJECT;
+		_pkt->objectId = _objectId;
+		_pkt->objectType = _objectType;
+		_pkt->factionType = _factionType;
+	}
+
+	SendBufferRef CloseAndReturn()
+	{
+		// 패킷 사이즈 계산
+		_pkt->packetSize = _bw.WriteSize();
+
+		_sendBuffer->Close(_bw.WriteSize());
+		return _sendBuffer;
+	}
+
+private:
+	PKT_S_SPAWN_OBJECT* _pkt = nullptr;
+	SendBufferRef _sendBuffer;
+	BufferWriter _bw;
+};
+#pragma pack()
 
 
 

@@ -3,8 +3,7 @@
 #include "ServerFunc.h"
 
 Player::Player()
-	: Object(Object_Type::PLAYER)
-	, name(nullptr)
+	: Object(ObjectType::PLAYER)
 {
 }
 

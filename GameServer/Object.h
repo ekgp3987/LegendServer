@@ -4,10 +4,12 @@
 class GameSession;
 class Room;
 
+static atomic<uint64>	objectStaticId = 0;
+
 class Object
 {
 public:
-	Object(Object_Type _objectType);
+	Object(ObjectType _objectType);
 	virtual ~Object();
 
 public:
@@ -19,8 +21,8 @@ public:
 	void SetFaction(FactionType _factionType) { factionType = _factionType; }
 
 private:
-	static atomic<uint64>	objectId;
-	Object_Type				objectType;
+	uint64							objectId;
+	ObjectType				objectType;
 	Room*							ownerRoom;
 	FactionType					factionType;
 };

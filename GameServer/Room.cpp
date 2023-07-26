@@ -4,6 +4,9 @@
 #include "GameSession.h"
 #include <Windows.h>
 #include "ClientPacketHandler.h"
+#include "Minion.h"
+#include <iostream>
+#include <sstream>
 
 Room GRoom;
 
@@ -35,7 +38,7 @@ void Room::Leave(PlayerRef player, GameSessionRef session)
 
 
 
-		//패킷을 생성해서 나갔다는 것을 모두에게 보여줘야 함.
+		//TO DO : 패킷을 생성해서 나갔다는 것을 모두에게 보여줘야 함.
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, GameSessionRef session)
@@ -69,7 +72,7 @@ void Room::ExcuteAfterTime(SendBufferRef sendBuffer, uint64 milliSeconds)
 
 void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 {	
-	thread t([=]() {
+	thread t([this, _sendBuffer, milliSeconds]() {
 		Sleep(milliSeconds);
 		bool success = true;
 		int64 playerNum = GRoom.GetPlayerSize();
@@ -107,6 +110,7 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	//플레이어 정보를 패킷에 넣음
 	int i = 0;
 	for (auto& p : players) {
+		cout << "Player " << to_string(p.second->GetObjectId()) << "의 정보입니다." << endl;
 		playerInfoList[i].champion = p.second->GetChampionType();
 		playerInfoList[i].faction = p.second->GetFaction();
 		playerInfoList[i].id = p.second->GetObjectId();
@@ -126,7 +130,51 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	Broadcast(sendBuffer, nullptr);
+
+	//Sleep(3000);
+
+	GameStartSpawn(_sendBuffer, 3000, success);
 		});
 
 	t.detach();
+}
+
+void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _success)
+{
+	thread t1([this, _sendBuffer, milliSeconds, _success]() {
+		int a = 0;
+
+		if (_success == false) {
+			cout << "GameStart실패해서 Spawn패킷 실행하지 않음";
+			return;
+		}
+
+		Sleep(milliSeconds);		
+
+		for (int i = 0; i < 6; i++) {
+			if ((i % 2) == 0) {
+				cout << "블루 미니언 생성" << endl;
+				MinionRef minionRef = MakeShared<Minion>();
+				_blueMinions[minionRef->GetObjectId()] = minionRef;
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEEMINION, FactionType::BLUE);
+				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+				Broadcast(sendBuffer,nullptr);
+				sendBuffer.reset();
+			}
+			else {
+				cout << "레드 미니언 생성" << endl;
+				MinionRef minionRef = MakeShared<Minion>();
+				_redMinions[minionRef->GetObjectId()] = minionRef;
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEEMINION, FactionType::RED);
+				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+				Broadcast(sendBuffer, nullptr);
+				sendBuffer.reset(); 
+				Sleep(500);
+			}			
+		}
+
+		cout << "미니언 생성 패킷을 다 보냄" << endl;
+	});
+
+	t1.detach();
 }

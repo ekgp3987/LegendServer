@@ -6,12 +6,14 @@ enum class FactionType
 {
     BLUE = 0,
     RED = 1,
-    END = 2,
+    NONE = 2,
+    END = 3,
 };
 
-enum class Object_Type {
+enum class ObjectType {
     PLAYER,
-    MINION,
+    MELEEMINION,
+    RANGEMINION,
     TOWER,
     MONSTER,
     END,
@@ -24,6 +26,7 @@ enum WaitingStatus
 };
 enum ChampionType
 {
+    NONE,
     BLITZCRANK,
     JINX,
     AMUMU,

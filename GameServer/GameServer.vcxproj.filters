@@ -22,6 +22,9 @@
     <Filter Include="GameContents\Object\Player">
       <UniqueIdentifier>{4d34dfd4-2d25-4ac5-b56c-f2831f5af731}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameContents\Object\Minion">
+      <UniqueIdentifier>{60ca01e9-d9f7-4a25-9727-b76b171099dd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -57,6 +60,9 @@
     <ClCompile Include="Object.cpp">
       <Filter>GameContents\Object</Filter>
     </ClCompile>
+    <ClCompile Include="Minion.cpp">
+      <Filter>GameContents\Object\Minion</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -88,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="Object.h">
       <Filter>GameContents\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Minion.h">
+      <Filter>GameContents\Object\Minion</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
