@@ -12,12 +12,35 @@ enum class FactionType
 
 enum class ObjectType {
     PLAYER,
-    MELEEMINION,
-    RANGEMINION,
+
+    MELEE_MINION,
+    CASTER_MINION,
+    SIEGE_MINION,
+    SUPER_MINION,
+
+    RAPTORS,
+    WOLF,
+    KRUG,
+    DRAGON,
+    BARON,
+
     TOWER,
-    MONSTER,
+    INHIBITOR,
+    NEXUS,
+
+    PROJECTILE,
+
     END,
 };
+
+enum class LaneType {
+    NONE,
+    TOP,
+    MID,
+    BOTTOM,
+    END,
+};
+
 
 enum WaitingStatus
 {
@@ -33,14 +56,25 @@ enum ChampionType
     MALPHITE,
 };
 
-struct PlayerMove
-{
-    enum PlayerState
-    {
-        IDLE = 0,
-        MOVE = 1,
-    };
+enum SkillType {
+    AUTO_ATTACK,
+    JINX_W,
+    JINX_E,
+    JINX_R,
+};
 
+enum class CC_TYPE
+{
+    STUN, // ±âÀý
+    SLOW, // µÐÈ­
+    SILENCE, // Ä§¹¬
+    SNARE, // ¼Ó¹Ú
+    BLEED, // ÃâÇ÷
+    AIRBORNE, // ¿¡¾îº»
+};
+
+struct ObjectMove
+{
     struct MoveDir
     {
         float x;
@@ -54,10 +88,16 @@ struct PlayerMove
         float y;
         float z;
     };
-
-    PlayerState state;
     MoveDir moveDir;
     Pos pos;
+};
+
+struct ObjectInfo {
+    uint64 objectId;
+    ObjectType objectType;
+    FactionType factionType;
+    LaneType    laneType;
+    ObjectMove objectMove;
 };
 
 struct PlayerInfo
@@ -66,7 +106,7 @@ struct PlayerInfo
     FactionType faction;
     ChampionType champion;
 
-    PlayerMove posInfo;
+    ObjectMove posInfo;
     // Vec3 Pos;
 };
 
@@ -77,7 +117,7 @@ struct PlayerInfoPacket
     ChampionType champion;
     bool host;
 
-    PlayerMove posInfo;
+    ObjectMove posInfo;
 
 
     uint16 nickNameOffset;
@@ -94,6 +134,33 @@ struct PlayerInfoPacket
         size += nickNameCount * sizeof(NickNameItem);
         return true;
     }
+};
+
+struct AnimInfo {
+    uint16 animIdx;
+    bool blend;
+    float blendTime;
+
+    uint16 animNameOffset;
+    uint16 animNameCount;
+
+    struct animNameItem {
+        wchar_t animName;
+    };
+
+    bool Validate(BYTE* packetStart, uint16 packetSize, OUT uint32& size) {
+        if (animNameOffset + animNameCount * sizeof(animNameItem) > packetSize)
+            return false;
+
+        size += animNameCount * sizeof(animNameItem);
+        return true;
+    }
+};
+
+struct SkillInfo {
+    uint64 OwnerId;
+    uint64 TargetId;
+    SkillType skillType;
 };
 
 extern PlayerInfo MyPlayer;

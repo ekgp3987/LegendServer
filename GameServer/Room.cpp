@@ -90,20 +90,19 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 
 	//플레이어들의 초기 위치값 설정
-	vector<PlayerMove> playerMove;
+	vector<ObjectMove> playerMove;
 	{
-		PlayerMove mPlayerMove;
-		mPlayerMove.state = PlayerMove::PlayerState::IDLE;
-		mPlayerMove.moveDir = PlayerMove::MoveDir{ 0.0f,0.0f,0.0f };
-		mPlayerMove.pos = PlayerMove::Pos{ 0.0f,0.0f,0.0f };
+		ObjectMove mPlayerMove;
+		mPlayerMove.moveDir = ObjectMove::MoveDir{ 0.0f,0.0f,0.0f };
+		mPlayerMove.pos = ObjectMove::Pos{ 0.0f,0.0f,0.0f };
 
-		mPlayerMove.pos = PlayerMove::Pos{ 10.0f,0.0f,10.0f };
+		mPlayerMove.pos = ObjectMove::Pos{ 10.0f,0.0f,10.0f };
 		playerMove.push_back(mPlayerMove);
-		mPlayerMove.pos = PlayerMove::Pos{ 30.0f,0.0f,10.0f };
+		mPlayerMove.pos = ObjectMove::Pos{ 30.0f,0.0f,10.0f };
 		playerMove.push_back(mPlayerMove);
-		mPlayerMove.pos = PlayerMove::Pos{ 10.0f,0.0f,100.0f };
+		mPlayerMove.pos = ObjectMove::Pos{ 10.0f,0.0f,100.0f };
 		playerMove.push_back(mPlayerMove);
-		mPlayerMove.pos = PlayerMove::Pos{ 30.0f,0.0f,10.0f };
+		mPlayerMove.pos = ObjectMove::Pos{ 30.0f,0.0f,10.0f };
 		playerMove.push_back(mPlayerMove);
 	}
 
@@ -156,7 +155,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 				cout << "블루 미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_blueMinions[minionRef->GetObjectId()] = minionRef;
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEEMINION, FactionType::BLUE);
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::BLUE);
 				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 				Broadcast(sendBuffer,nullptr);
 				sendBuffer.reset();
@@ -165,7 +164,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 				cout << "레드 미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEEMINION, FactionType::RED);
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::RED);
 				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 				Broadcast(sendBuffer, nullptr);
 				sendBuffer.reset(); 

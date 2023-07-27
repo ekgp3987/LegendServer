@@ -6,6 +6,7 @@
 
 #include "Player.h"
 #include "Room.h"
+#include "Projectile.h"
 
 #include <string>
 #include <codecvt>
@@ -31,8 +32,26 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	case C_PICK_CHAMPION:
 		Handle_C_PICK_CHAMPION(session, buffer, len);
 		break;
-	case C_MOVE:
-		Handle_C_MOVE(session, buffer, len);
+	case C_PLAYER_MOVE:
+		Handle_C_PLAYER_MOVE(session, buffer, len);
+		break;
+	case C_OBJECT_ANIM:
+		Handle_C_OBJECT_ANIM(session, buffer, len);
+		break;
+	case C_OBJECT_MOVE:
+		Handle_C_OBJECT_MOVE(session, buffer, len);
+		break;
+	case C_SKILL_PROJECTILE:
+		Handle_C_SKILL_PROJECTILE(session, buffer, len);
+		break;
+	case C_SKILL_HIT:
+		Handle_C_SKILL_HIT(session, buffer, len);
+		break;
+	case C_SKILL_DAMAGE:
+		Handle_C_SKILL_DAMAGE(session, buffer, len);
+		break;
+	case C_SKILL_CC:
+		Handle_C_SKILL_CC(session, buffer, len);
 		break;
 	default:
 		break;
@@ -172,7 +191,7 @@ void ClientPacketHandler::Handle_C_PICK_CHAMPION(PacketSessionRef& session, BYTE
 	GRoom.Broadcast(sendBuffer, nullptr);
 }
 
-void ClientPacketHandler::Handle_C_MOVE(PacketSessionRef& session, BYTE* buffer, int32 len)
+void ClientPacketHandler::Handle_C_PLAYER_MOVE(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
@@ -180,14 +199,211 @@ void ClientPacketHandler::Handle_C_MOVE(PacketSessionRef& session, BYTE* buffer,
 
 	cout << "Handle_C_MOVE에 진입함" << endl;
 
-	PKT_C_MOVE* pkt = reinterpret_cast<PKT_C_MOVE*>(buffer);
+	PKT_C_PLAYER_MOVE* pkt = reinterpret_cast<PKT_C_PLAYER_MOVE*>(buffer);
 
 	if (pkt->Validate() == false)
 		return;
 
-	PlayerMove playerMove = pkt->playerMove;
+	ObjectMove playerMove = pkt->playerMove;
 
-	PKT_S_MOVE_WRITE pktWriter(gameSession->GetPlayer()->GetObjectId(), playerMove);
+	PKT_S_PLAYER_MOVE_WRITE pktWriter(gameSession->GetPlayer()->GetObjectId(), playerMove);
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_OBJECT_ANIM(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "C_OBJECT_ANIM에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_OBJECT_ANIM* pkt = reinterpret_cast<PKT_C_OBJECT_ANIM*>(buffer);
+
+
+	if (pkt->Validate() == false)
+	{
+		cout << "C_OBJECT_ANIM Validate 실패" << endl;
+		return;
+	}
+
+	uint64 objectId = pkt->targetId;
+	AnimInfo animInfo = pkt->animInfo;
+
+	cout << "해당 오브젝트 ID : " << objectId<< endl;
+
+	PKT_C_OBJECT_ANIM::AnimNameList animNames = pkt->GetAnimNameList();
+
+	wstring resultAnimName = L"";
+	for (auto& animName : animNames) {
+		resultAnimName.push_back(animName.animName);
+	}
+
+	PKT_S_OBJECT_ANIM_WRITE pktWriter(objectId, animInfo);
+
+	PKT_S_OBJECT_ANIM_WRITE::AnimNameList animName = pktWriter.ReserveAnimNameList(resultAnimName.size());
+	for (int i = 0; i < resultAnimName.size(); i++) {
+		animName[i] = { resultAnimName[i] };
+	}
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_OBJECT_MOVE(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "C_OBJECT_MOVE에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_OBJECT_MOVE* pkt = reinterpret_cast<PKT_C_OBJECT_MOVE*>(buffer);
+
+	if (pkt->Validate() == false)
+	{
+		cout << "C_OBJECT_MOVE Validate 실패" << endl;
+		return;
+	}
+
+	uint64 objectId = pkt->objectId;
+	ObjectMove objectMobe = pkt->objectMove;
+
+	cout << "오브젝트 ID : " << objectId << endl;
+
+	PKT_S_OBJECT_MOVE_WRITE pktWriter(objectId, objectMobe);	
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_SKILL_PROJECTILE(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "C_SKILL_PROJECTILE에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_SKILL_PROJECTILE* pkt = reinterpret_cast<PKT_C_SKILL_PROJECTILE*>(buffer);
+
+	if (pkt->Validate() == false)
+	{
+		cout << "C_SKILL_PROJECTILE Validate 실패" << endl;
+		return;
+	}
+
+	Projectile* projectile = new Projectile;
+
+	SkillInfo skillInfo = pkt->skillInfo;
+
+	PKT_S_SKILL_PROJECTILE_WRITE pktWriter(projectile->GetObjectId(), skillInfo);
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+
+	delete projectile;
+}
+
+void ClientPacketHandler::Handle_C_SKILL_HIT(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "C_SKILL_HIT에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_SKILL_HIT* pkt = reinterpret_cast<PKT_C_SKILL_HIT*>(buffer);
+
+	if (pkt->Validate() == false)
+	{
+		cout << "C_SKILL_HIT Validate 실패" << endl;
+		return;
+	}
+
+	PKT_S_SKILL_HIT_WRITE pktWriter(pkt->objecId, pkt->skillInfo);
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_SKILL_DAMAGE(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "C_SKILL_DAMAGE에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_SKILL_DAMAGE* pkt = reinterpret_cast<PKT_C_SKILL_DAMAGE*>(buffer);
+
+	if (pkt->Validate() == false)
+	{
+		cout << "C_SKILL_DAMAGE Validate 실패" << endl;
+		return;
+	}
+
+	PKT_S_SKILL_DAMAGE_WRITE pktWriter(pkt->objecId, pkt->damage);
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_SKILL_CC(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "C_SKILL_CC에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_SKILL_CC* pkt = reinterpret_cast<PKT_C_SKILL_CC*>(buffer);
+
+	if (pkt->Validate() == false)
+	{
+		cout << "C_SKILL_CC Validate 실패" << endl;
+		return;
+	}
+
+	PKT_S_SKILL_CC_WRITE pktWriter(pkt->objecId, pkt->CCType, pkt->time);
+
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	GRoom.Broadcast(sendBuffer, nullptr);
