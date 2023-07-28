@@ -7,6 +7,7 @@
 #include "Minion.h"
 #include <iostream>
 #include <sstream>
+#include "ServerFunc.h"
 
 Room GRoom;
 
@@ -30,6 +31,8 @@ void Room::RedEnter(PlayerRef player, GameSessionRef session)
 
 void Room::Leave(PlayerRef player, GameSessionRef session)
 {
+	if (session->GetPlayer() == nullptr)
+		return;
 	uint64 currentPlayerId = session->GetPlayer()->GetObjectId();
 	WRITE_LOCK;
 		_bluePlayers.erase(currentPlayerId);
@@ -130,12 +133,15 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 	Broadcast(sendBuffer, nullptr);
 
-	//Sleep(3000);
+	//thread t1(TimeThread);
 
 	GameStartSpawn(_sendBuffer, 3000, success);
+
+	//t1.detach();
 		});
 
 	t.detach();
+	
 }
 
 void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _success)
@@ -150,30 +156,138 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 
 		Sleep(milliSeconds);		
 
-		for (int i = 0; i < 6; i++) {
-			if ((i % 2) == 0) {
-				cout << "블루 미니언 생성" << endl;
-				MinionRef minionRef = MakeShared<Minion>();
-				_blueMinions[minionRef->GetObjectId()] = minionRef;
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::BLUE);
-				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-				Broadcast(sendBuffer,nullptr);
-				sendBuffer.reset();
-			}
-			else {
-				cout << "레드 미니언 생성" << endl;
-				MinionRef minionRef = MakeShared<Minion>();
-				_redMinions[minionRef->GetObjectId()] = minionRef;
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::RED);
-				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-				Broadcast(sendBuffer, nullptr);
-				sendBuffer.reset(); 
-				Sleep(500);
-			}			
+		//한 라인에 총 3마리의 근접 미니언 생성
+		for (int i = 0; i < 3; i++) {
+			//3라인당 미니언 생성
+			for (int j = 0; j < 3; j++) {
+				LaneType laneType = LaneType::END;
+				if (j == 0)
+					laneType = LaneType::TOP;
+				if (j == 1)
+					laneType == LaneType::MID;
+				if (j == 2)
+					laneType == LaneType::BOTTOM;
+				{
+					cout << "블루 미니언 생성" << endl;
+					MinionRef minionRef = MakeShared<Minion>();
+					_blueMinions[minionRef->GetObjectId()] = minionRef;
+
+					//ObjectInfo 설정
+					ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+					ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+					ObjectMove::Pos pos = { 10.f,10.f,10.f };
+					CC_TYPE CCType = CC_TYPE::NONE;
+					ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::BLUE, laneType, objectMove);
+
+					PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+					SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+					Broadcast(sendBuffer, nullptr);
+				}
+				{
+					cout << "레드 미니언 생성" << endl;
+					MinionRef minionRef = MakeShared<Minion>();
+					_redMinions[minionRef->GetObjectId()] = minionRef;
+
+					//ObjectInfo 설정
+					ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+					ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+					ObjectMove::Pos pos = { 10.f,10.f,10.f };
+					CC_TYPE CCType = CC_TYPE::NONE;
+					ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::RED, laneType, objectMove);
+
+
+					PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+					SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+					Broadcast(sendBuffer, nullptr);
+				}
+			}					
+			Sleep(500);
 		}
+
+		////한 라인에 총 3마리의 원거리 미니언 생성
+		//for (int i = 0; i < 3; i++) {
+		//	//3라인당 미니언 생성 //j가 0이면 탑 1이면 미드 2명 바텀
+		//	for (int j = 0; j < 3; j++) {
+		//		LaneType laneType;
+		//		if (j == 0)
+		//			laneType = LaneType::TOP;
+		//		if (j == 1)
+		//			laneType == LaneType::MID;
+		//		if (j == 2)
+		//			laneType == LaneType::BOTTOM;
+		//		{
+		//			cout << "블루 미니언 생성" << endl;
+		//			MinionRef minionRef = MakeShared<Minion>();
+		//			_blueMinions[minionRef->GetObjectId()] = minionRef;
+
+		//			//ObjectInfo 설정
+		//			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+		//			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+		//			ObjectMove::Pos pos = { 10.f,10.f,10.f };
+		//			CC_TYPE CCType = CC_TYPE::NONE;
+		//			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+		//			SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::CASTER_MINION, FactionType::BLUE, laneType, objectMove);
+
+		//			//패킷 생성
+		//			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+		//			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+		//			Broadcast(sendBuffer, nullptr);
+		//		}
+		//		{
+		//			cout << "레드 미니언 생성" << endl;
+		//			MinionRef minionRef = MakeShared<Minion>();
+		//			_redMinions[minionRef->GetObjectId()] = minionRef;
+
+		//			//ObjectInfo 설정
+		//			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+		//			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+		//			ObjectMove::Pos pos = { 10.f,10.f,10.f };
+		//			CC_TYPE CCType = CC_TYPE::NONE;
+		//			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+		//			SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::CASTER_MINION, FactionType::RED, laneType, objectMove);
+
+
+		//			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+		//			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+		//			Broadcast(sendBuffer, nullptr);
+		//		}
+		//	}
+		//	Sleep(500);
+		//}
 
 		cout << "미니언 생성 패킷을 다 보냄" << endl;
 	});
 
 	t1.detach();
+}
+
+void Room::TimeThread()
+{
+	for (int seconds = 0; seconds <= 3600; seconds++) {
+		second = seconds;
+		cout << "게임 시작 후 " << seconds << "초가 지났습니다." << endl;
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+}
+
+void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, ObjectType _objectType, FactionType _factionType, LaneType _laneType, ObjectMove _objectMove)
+{
+	_objectInfo.objectId = _objectId;
+	_objectInfo.objectType = _objectType;
+	_objectInfo.factionType = _factionType;
+	_objectInfo.laneType = _laneType;
+	_objectInfo.objectMove = _objectMove;
+}
+
+void Room::SetObjectMove(OUT ObjectMove& _objectMove, int _LV, float _HP, float _MP, float _AD, float _Defence, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos)
+{
+	_objectMove.LV = _LV;
+	_objectMove.HP = _HP;
+	_objectMove.MP = _MP;
+	_objectMove.AD = _AD;
+	_objectMove.Defence = _Defence;
+	_objectMove.moveDir = _moveDir;
+	_objectMove.pos = _pos;
 }

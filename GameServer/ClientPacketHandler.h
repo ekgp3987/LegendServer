@@ -442,7 +442,7 @@ struct PKT_C_OBJECT_ANIM {
 	uint16 packetSize;
 	uint16 packetId;
 	uint64 targetId;
-	AnimInfo animInfo;
+	AnimInfoPacket animInfo;
 
 	bool Validate()
 	{
@@ -460,13 +460,13 @@ struct PKT_C_OBJECT_ANIM {
 		return true;
 	}
 
-	using AnimNameList = PacketList<AnimInfo::animNameItem>;
+	using AnimNameList = PacketList<AnimInfoPacket::animNameItem>;
 
 	AnimNameList GetAnimNameList()
 	{
 		BYTE* data = reinterpret_cast<BYTE*>(this);
 		data += animInfo.animNameOffset;
-		return AnimNameList(reinterpret_cast<AnimInfo::animNameItem*>(data), animInfo.animNameCount);
+		return AnimNameList(reinterpret_cast<AnimInfoPacket::animNameItem*>(data), animInfo.animNameCount);
 	}
 };
 #pragma pack()
@@ -476,7 +476,7 @@ struct PKT_S_OBJECT_ANIM {
 	uint16 packetSize;
 	uint16 packetId;
 	uint64 targetId;
-	AnimInfo animInfo;
+	AnimInfoPacket animInfo;
 
 	bool Validate()
 	{
@@ -494,13 +494,13 @@ struct PKT_S_OBJECT_ANIM {
 		return true;
 	}
 
-	using AnimNameList = PacketList<AnimInfo::animNameItem>;
+	using AnimNameList = PacketList<AnimInfoPacket::animNameItem>;
 
 	AnimNameList GetAnimNameList()
 	{
 		BYTE* data = reinterpret_cast<BYTE*>(this);
 		data += animInfo.animNameOffset;
-		return AnimNameList(reinterpret_cast<AnimInfo::animNameItem*>(data), animInfo.animNameCount);
+		return AnimNameList(reinterpret_cast<AnimInfoPacket::animNameItem*>(data), animInfo.animNameCount);
 	}
 };
 #pragma pack()
@@ -509,9 +509,7 @@ struct PKT_S_OBJECT_ANIM {
 struct PKT_S_SPAWN_OBJECT {
 	uint16 packetSize;
 	uint16 packetId;
-	uint64 objectId;
-	ObjectType objectType;
-	FactionType factionType;
+	ObjectInfo objectInfo;
 
 	bool Validate()
 	{
@@ -707,7 +705,7 @@ struct PKT_S_SKILL_DAMAGE {
 struct PKT_C_SKILL_CC {
 	uint16	packetSize;
 	uint16	packetId;
-	uint64	objecId;
+	uint64	objectId;
 	CC_TYPE CCType;
 	float		time;
 
@@ -964,10 +962,10 @@ private:
 #pragma pack(1)
 class PKT_S_OBJECT_ANIM_WRITE {
 public:
-	using AnimNameList = PacketList<AnimInfo::animNameItem>;
-	using AnimNameItem = AnimInfo::animNameItem;
+	using AnimNameList = PacketList<AnimInfoPacket::animNameItem>;
+	using AnimNameItem = AnimInfoPacket::animNameItem;
 
-	PKT_S_OBJECT_ANIM_WRITE(uint64 _targetId, /*animName은 가변 배열임으로 넣어주지 말것*/ AnimInfo _animInfo)
+	PKT_S_OBJECT_ANIM_WRITE(uint64 _targetId, /*animName은 가변 배열임으로 넣어주지 말것*/ AnimInfoPacket _animInfo)
 	{
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
@@ -1006,7 +1004,7 @@ private:
 #pragma pack(1)
 class PKT_S_SPAWN_OBJECT_WRITE {
 public:
-	PKT_S_SPAWN_OBJECT_WRITE(uint64 _objectId, ObjectType _objectType, FactionType _factionType) {
+	PKT_S_SPAWN_OBJECT_WRITE(ObjectInfo _objectInfo) {
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
 		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
@@ -1014,9 +1012,7 @@ public:
 		_pkt = _bw.Reserve<PKT_S_SPAWN_OBJECT>();
 		_pkt->packetSize = 0; // To Fill
 		_pkt->packetId = S_SPAWN_OBJECT;
-		_pkt->objectId = _objectId;
-		_pkt->objectType = _objectType;
-		_pkt->factionType = _factionType;
+		_pkt->objectInfo = _objectInfo;
 	}
 
 	SendBufferRef CloseAndReturn()

@@ -6,5 +6,11 @@ class Minion :
 public:
     Minion();
     ~Minion();
+
+public:
+    ObjectInfo& GetObjectInfo() { return objectInfo; }
+
+private:
+    ObjectInfo objectInfo;
 };
 

@@ -235,7 +235,7 @@ void ClientPacketHandler::Handle_C_OBJECT_ANIM(PacketSessionRef& session, BYTE* 
 	}
 
 	uint64 objectId = pkt->targetId;
-	AnimInfo animInfo = pkt->animInfo;
+	AnimInfoPacket animInfo = pkt->animInfo;
 
 	cout << "해당 오브젝트 ID : " << objectId<< endl;
 
@@ -311,6 +311,8 @@ void ClientPacketHandler::Handle_C_SKILL_PROJECTILE(PacketSessionRef& session, B
 		cout << "C_SKILL_PROJECTILE Validate 실패" << endl;
 		return;
 	}
+	//여기까지 패킷 받는 부분 밑에서 보내는 패킷 작성
+
 
 	Projectile* projectile = new Projectile;
 
@@ -402,10 +404,9 @@ void ClientPacketHandler::Handle_C_SKILL_CC(PacketSessionRef& session, BYTE* buf
 		return;
 	}
 
-	PKT_S_SKILL_CC_WRITE pktWriter(pkt->objecId, pkt->CCType, pkt->time);
+	PKT_S_SKILL_CC_WRITE pktWriter(pkt->objectId, pkt->CCType, pkt->time);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	GRoom.Broadcast(sendBuffer, nullptr);
 }
- 

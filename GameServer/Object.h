@@ -21,7 +21,7 @@ public:
 	void SetFaction(FactionType _factionType) { factionType = _factionType; }
 
 private:
-	uint64							objectId;
+	uint64							objectId=0;
 	ObjectType				objectType;
 	Room*							ownerRoom;
 	FactionType					factionType;

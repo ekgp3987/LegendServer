@@ -65,6 +65,7 @@ enum SkillType {
 
 enum class CC_TYPE
 {
+    NONE,
     STUN, // ±âÀý
     SLOW, // µÐÈ­
     SILENCE, // Ä§¹¬
@@ -75,6 +76,7 @@ enum class CC_TYPE
 
 struct ObjectMove
 {
+public:
     struct MoveDir
     {
         float x;
@@ -88,11 +90,43 @@ struct ObjectMove
         float y;
         float z;
     };
+public:
+    ObjectMove() {}
+    ObjectMove(int _LV, float _HP, float _MP, float _AD, float _Defence, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos, CC_TYPE _CCType)
+        : LV(_LV)
+        , HP(_HP)
+        , MP(_MP)
+        , AD(_AD)
+        , Defence(_Defence)
+        , moveDir(_moveDir)
+        , pos(_pos)
+        , CCType(_CCType)
+    {}
+    ~ObjectMove() {}
+
+    int   LV;
+    float HP;
+    float MP;
+    float AD;
+    float Defence;
+
     MoveDir moveDir;
     Pos pos;
+    CC_TYPE CCType;
 };
 
+
 struct ObjectInfo {
+    ObjectInfo() {}
+    ObjectInfo(uint64 _objectId, ObjectType _objectType, FactionType _factionType, LaneType _laneType, ObjectMove _objectMove)
+        : objectId(_objectId)
+        , objectType(_objectType)
+        , factionType(_factionType)
+        , laneType(_laneType)
+        , objectMove(_objectMove)
+    {}
+    ~ObjectInfo() {}
+
     uint64 objectId;
     ObjectType objectType;
     FactionType factionType;
@@ -116,9 +150,7 @@ struct PlayerInfoPacket
     FactionType faction;
     ChampionType champion;
     bool host;
-
     ObjectMove posInfo;
-
 
     uint16 nickNameOffset;
     uint16 nickNameCount;
@@ -136,7 +168,7 @@ struct PlayerInfoPacket
     }
 };
 
-struct AnimInfo {
+struct AnimInfoPacket {
     uint16 animIdx;
     bool blend;
     float blendTime;
