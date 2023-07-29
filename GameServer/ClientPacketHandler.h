@@ -441,7 +441,7 @@ struct PKT_S_PLAYER_MOVE
 struct PKT_C_OBJECT_ANIM {
 	uint16 packetSize;
 	uint16 packetId;
-	uint64 targetId;
+	uint64 sendId;
 	AnimInfoPacket animInfo;
 
 	bool Validate()
@@ -475,7 +475,7 @@ struct PKT_C_OBJECT_ANIM {
 struct PKT_S_OBJECT_ANIM {
 	uint16 packetSize;
 	uint16 packetId;
-	uint64 targetId;
+	uint64 sendId;
 	AnimInfoPacket animInfo;
 
 	bool Validate()
@@ -965,7 +965,7 @@ public:
 	using AnimNameList = PacketList<AnimInfoPacket::animNameItem>;
 	using AnimNameItem = AnimInfoPacket::animNameItem;
 
-	PKT_S_OBJECT_ANIM_WRITE(uint64 _targetId, /*animName은 가변 배열임으로 넣어주지 말것*/ AnimInfoPacket _animInfo)
+	PKT_S_OBJECT_ANIM_WRITE(uint64 sendId, /*animName은 가변 배열임으로 넣어주지 말것*/ AnimInfoPacket _animInfo)
 	{
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
@@ -974,7 +974,7 @@ public:
 		_pkt = _bw.Reserve<PKT_S_OBJECT_ANIM>();
 		_pkt->packetSize = 0; // To Fill
 		_pkt->packetId = S_OBJECT_ANIM;
-		_pkt->targetId = _targetId;
+		_pkt->sendId = sendId;
 		_pkt->animInfo = _animInfo;
 	}
 

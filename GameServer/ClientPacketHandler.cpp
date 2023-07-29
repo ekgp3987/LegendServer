@@ -234,10 +234,10 @@ void ClientPacketHandler::Handle_C_OBJECT_ANIM(PacketSessionRef& session, BYTE* 
 		return;
 	}
 
-	uint64 objectId = pkt->targetId;
+	uint64 sendId = pkt->sendId;
 	AnimInfoPacket animInfo = pkt->animInfo;
 
-	cout << "해당 오브젝트 ID : " << objectId<< endl;
+	cout << "해당 오브젝트 ID : " << sendId << endl;
 
 	PKT_C_OBJECT_ANIM::AnimNameList animNames = pkt->GetAnimNameList();
 
@@ -246,7 +246,7 @@ void ClientPacketHandler::Handle_C_OBJECT_ANIM(PacketSessionRef& session, BYTE* 
 		resultAnimName.push_back(animName.animName);
 	}
 
-	PKT_S_OBJECT_ANIM_WRITE pktWriter(objectId, animInfo);
+	PKT_S_OBJECT_ANIM_WRITE pktWriter(sendId, animInfo);
 
 	PKT_S_OBJECT_ANIM_WRITE::AnimNameList animName = pktWriter.ReserveAnimNameList(resultAnimName.size());
 	for (int i = 0; i < resultAnimName.size(); i++) {

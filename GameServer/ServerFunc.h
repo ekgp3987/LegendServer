@@ -169,7 +169,8 @@ struct PlayerInfoPacket
 };
 
 struct AnimInfoPacket {
-    uint16 animIdx;
+    uint16 targetId;
+    bool bRepeat;
     bool blend;
     float blendTime;
 
@@ -192,6 +193,7 @@ struct AnimInfoPacket {
 struct SkillInfo {
     uint64 OwnerId;
     uint64 TargetId;
+    uint16 SkillLevel;
     SkillType skillType;
 };
 
