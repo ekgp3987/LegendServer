@@ -218,10 +218,10 @@ void ClientPacketHandler::Handle_C_OBJECT_ANIM(PacketSessionRef& session, BYTE* 
 
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
-	if (gameSession->GetPlayer()->GetHost() == false) {
-		cout << "방장이 아닙니다." << endl;
-		return;
-	}
+	//if (gameSession->GetPlayer()->GetHost() == false) {
+	//	cout << "방장이 아닙니다." << endl;
+	//	return;
+	//}
 
 	BufferReader br(buffer, len);
 
