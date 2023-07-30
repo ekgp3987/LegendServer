@@ -177,19 +177,19 @@ struct PKT_S_LOGIN
 {
 	struct PlayerListItem
 	{
-		uint64 playerId;
-		FactionType playerFaction;
-		bool				host;
+		uint64  playerId;
+		Faction playerFaction;
+		bool    host;
 
 		uint16 nickNameOffset;
 		uint16 nickNameCount;
 
 		bool Validate(BYTE* packetStart, uint16 packetSize, OUT uint32& size)
 		{
-			if (nickNameOffset + nickNameCount * sizeof(BYTE)*2 > packetSize)
+			if (nickNameOffset + nickNameCount * sizeof(BYTE) * 2 > packetSize)
 				return false;
 
-			size += nickNameCount * sizeof(BYTE)*2;
+			size += nickNameCount * sizeof(BYTE) * 2;
 			return true;
 		}
 	};
@@ -203,7 +203,7 @@ struct PKT_S_LOGIN
 	bool success;
 	uint64 playerId;
 	uint16 playerListoffset;
-	uint16 playerListcount;	
+	uint16 playerListcount;
 
 	bool Validate()
 	{
@@ -240,7 +240,7 @@ struct PKT_S_LOGIN
 		return PlayerList(reinterpret_cast<PKT_S_LOGIN::PlayerListItem*>(data), playerListcount);
 	}
 
-	NickNameList  GetNickNameList(PlayerListItem * playerList)
+	NickNameList  GetNickNameList(PlayerListItem* playerList)
 	{
 		BYTE* data = reinterpret_cast<BYTE*>(this);
 		data += playerList->nickNameOffset;
@@ -321,7 +321,7 @@ struct PKT_S_PICK_CHAMPION
 {
 	uint16 packetSize;
 	uint16 packetId;
-	bool	success;
+	bool   success;
 	uint16 PlayerID;
 	ChampionType champion;
 
@@ -344,7 +344,7 @@ struct PKT_S_PICK_CHAMPION
 struct PKT_S_GAME_START {
 	uint16 packetSize;
 	uint16 packetId;
-	bool	success;
+	bool   success;
 	uint16 playerInfoOffset;
 	uint16 playerInfoCount;
 
@@ -452,7 +452,7 @@ struct PKT_C_OBJECT_ANIM {
 			return false;
 
 		if (animInfo.Validate((BYTE*)this, packetSize, OUT size) == false)
-			return false;		
+			return false;
 
 		if (size != packetSize)
 			return false;
@@ -659,10 +659,10 @@ struct PKT_S_SKILL_HIT {
 
 #pragma pack(1)
 struct PKT_C_SKILL_DAMAGE {
-	uint16	packetSize;
-	uint16	packetId;
-	uint64	objecId;
-	float		damage;
+	uint16   packetSize;
+	uint16   packetId;
+	uint64   objecId;
+	float      damage;
 
 	bool Validate()
 	{
@@ -681,10 +681,10 @@ struct PKT_C_SKILL_DAMAGE {
 
 #pragma pack(1)
 struct PKT_S_SKILL_DAMAGE {
-	uint16	packetSize;
-	uint16	packetId;
-	uint64	objecId;
-	float		damage;
+	uint16   packetSize;
+	uint16   packetId;
+	uint64   objecId;
+	float      damage;
 
 	bool Validate()
 	{
@@ -703,11 +703,11 @@ struct PKT_S_SKILL_DAMAGE {
 
 #pragma pack(1)
 struct PKT_C_SKILL_CC {
-	uint16	packetSize;
-	uint16	packetId;
-	uint64	objectId;
-	CC_TYPE CCType;
-	float		time;
+	uint16   packetSize;
+	uint16   packetId;
+	uint64   objecId;
+	CC		 CC;
+	float    time;
 
 	bool Validate()
 	{
@@ -726,11 +726,11 @@ struct PKT_C_SKILL_CC {
 
 #pragma pack(1)
 struct PKT_S_SKILL_CC {
-	uint16	packetSize;
-	uint16	packetId;
-	uint64	objecId;
-	CC_TYPE CCType;
-	float		time;
+	uint16   packetSize;
+	uint16   packetId;
+	uint64   objecId;
+	CC       CC;
+	float    time;
 
 	bool Validate()
 	{
@@ -760,7 +760,7 @@ public:
 	using NickNameItem = PKT_S_LOGIN::NickNameStruct;
 	using NickNameList = PacketList<PKT_S_LOGIN::NickNameStruct>;
 
-	using PlayerFactionEnum = FactionType;
+	using PlayerFactionEnum = Faction;
 
 public:
 	PKT_S_LOGIN_WRITE(bool _success, uint64 _playerId, PlayerFactionEnum _faction) {
@@ -1158,7 +1158,7 @@ private:
 #pragma pack(1)
 class PKT_S_SKILL_CC_WRITE {
 public:
-	PKT_S_SKILL_CC_WRITE(uint64 _objectId, CC_TYPE _CCType, float _time) {
+	PKT_S_SKILL_CC_WRITE(uint64 _objectId, CC _CC, float _time) {
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// ÃÊ±âÈ­
 		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
@@ -1167,7 +1167,7 @@ public:
 		_pkt->packetSize = 0; // To Fill
 		_pkt->packetId = S_SKILL_CC;
 		_pkt->objecId = _objectId;
-		_pkt->CCType = _CCType;
+		_pkt->CC = _CC;
 		_pkt->time = _time;
 	}
 

@@ -160,13 +160,13 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 		for (int i = 0; i < 3; i++) {
 			//3라인당 미니언 생성
 			for (int j = 0; j < 3; j++) {
-				LaneType laneType = LaneType::END;
+				Lane laneType = Lane::END;
 				if (j == 0)
-					laneType = LaneType::TOP;
+					laneType = Lane::TOP;
 				if (j == 1)
-					laneType == LaneType::MID;
+					laneType == Lane::MID;
 				if (j == 2)
-					laneType == LaneType::BOTTOM;
+					laneType == Lane::BOTTOM;
 				{
 					cout << "블루 미니언 생성" << endl;
 					MinionRef minionRef = MakeShared<Minion>();
@@ -176,9 +176,9 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 					ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 					ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 					ObjectMove::Pos pos = { 10.f,10.f,10.f };
-					CC_TYPE CCType = CC_TYPE::NONE;
+					CC CCType = CC::CLEAR;
 					ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
-					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::BLUE, laneType, objectMove);
+					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, Faction::BLUE, laneType, objectMove);
 
 					PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 					SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
@@ -193,9 +193,9 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 					ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 					ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 					ObjectMove::Pos pos = { 10.f,10.f,10.f };
-					CC_TYPE CCType = CC_TYPE::NONE;
+					CC CCType = CC::CLEAR;
 					ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
-					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, FactionType::RED, laneType, objectMove);
+					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, Faction::RED, laneType, objectMove);
 
 
 					PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -272,22 +272,22 @@ void Room::TimeThread()
 	}
 }
 
-void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, ObjectType _objectType, FactionType _factionType, LaneType _laneType, ObjectMove _objectMove)
+void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, ObjectType _objectType, Faction _faction, Lane _lane, ObjectMove _objectMove)
 {
 	_objectInfo.objectId = _objectId;
 	_objectInfo.objectType = _objectType;
-	_objectInfo.factionType = _factionType;
-	_objectInfo.laneType = _laneType;
+	_objectInfo.faction = _faction;
+	_objectInfo.lane = _lane;
 	_objectInfo.objectMove = _objectMove;
 }
 
-void Room::SetObjectMove(OUT ObjectMove& _objectMove, int _LV, float _HP, float _MP, float _AD, float _Defence, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos)
+void Room::SetObjectMove(OUT ObjectMove& _objectMove, int _LV, float _HP, float _MP, float _AttackPower, float _DefencePower, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos)
 {
 	_objectMove.LV = _LV;
 	_objectMove.HP = _HP;
 	_objectMove.MP = _MP;
-	_objectMove.AD = _AD;
-	_objectMove.Defence = _Defence;
+	_objectMove.AttackPower = _AttackPower;
+	_objectMove.DefencePower = _DefencePower;
 	_objectMove.moveDir = _moveDir;
 	_objectMove.pos = _pos;
 }

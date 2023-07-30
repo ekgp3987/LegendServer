@@ -2,12 +2,12 @@
 
 
 
-enum class FactionType
+enum class Faction
 {
-    BLUE = 0,
-    RED = 1,
-    NONE = 2,
-    END = 3,
+    NONE,
+    RED,
+    BLUE,
+    END,
 };
 
 enum class ObjectType {
@@ -33,7 +33,8 @@ enum class ObjectType {
     END,
 };
 
-enum class LaneType {
+enum class Lane
+{
     NONE,
     TOP,
     MID,
@@ -42,11 +43,6 @@ enum class LaneType {
 };
 
 
-enum WaitingStatus
-{
-    WAITING = 0,
-    RUN = 1,
-};
 enum ChampionType
 {
     NONE,
@@ -56,23 +52,30 @@ enum ChampionType
     MALPHITE,
 };
 
-enum SkillType {
-    AUTO_ATTACK,
+enum class SkillType
+{
+    BASIC_ATTACK,		// 모든 종류의 평타 (미니언/정글몹의 기본공격 포함)
+    JINX_Q,
     JINX_W,
     JINX_E,
     JINX_R,
+    DARIUS_Q,
+    DARIUS_W,
+    DARIUS_E,
+    DARIUS_R,
 };
 
-enum class CC_TYPE
+// 군중 제어기
+enum class CC
 {
-    NONE,
-    STUN, // 기절
-    SLOW, // 둔화
-    SILENCE, // 침묵
-    SNARE, // 속박
-    BLEED, // 출혈
-    AIRBORNE, // 에어본
+    CLEAR = 0,
+    SLOW = 1 << 0,
+    SILENCE = 1 << 1,
+    ROOT = 1 << 2,
+    STUN = 1 << 3,
+    AIRBORNE = 1 << 4,
 };
+
 
 struct ObjectMove
 {
@@ -92,62 +95,64 @@ public:
     };
 public:
     ObjectMove() {}
-    ObjectMove(int _LV, float _HP, float _MP, float _AD, float _Defence, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos, CC_TYPE _CCType)
+    ObjectMove(int _LV, float _HP, float _MP, float _AttackPower, float _DefencePower, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos, CC _CC)
         : LV(_LV)
         , HP(_HP)
         , MP(_MP)
-        , AD(_AD)
-        , Defence(_Defence)
+        , AttackPower(_AttackPower)
+        , DefencePower(_DefencePower)
         , moveDir(_moveDir)
         , pos(_pos)
-        , CCType(_CCType)
+        , CC(_CC)
     {}
     ~ObjectMove() {}
 
     int   LV;
     float HP;
     float MP;
-    float AD;
-    float Defence;
+    float AttackPower;
+    float DefencePower;
 
     MoveDir moveDir;
     Pos pos;
-    CC_TYPE CCType;
+    CC  CC;
 };
 
 
 struct ObjectInfo {
     ObjectInfo() {}
-    ObjectInfo(uint64 _objectId, ObjectType _objectType, FactionType _factionType, LaneType _laneType, ObjectMove _objectMove)
+    ObjectInfo(uint64 _objectId, ObjectType _objectType, Faction _faction, Lane _lane, ObjectMove _objectMove)
         : objectId(_objectId)
         , objectType(_objectType)
-        , factionType(_factionType)
-        , laneType(_laneType)
+        , faction(_faction)
+        , lane(_lane)
         , objectMove(_objectMove)
     {}
     ~ObjectInfo() {}
 
     uint64 objectId;
     ObjectType objectType;
-    FactionType factionType;
-    LaneType    laneType;
+    Faction    faction;
+    Lane       lane;
     ObjectMove objectMove;
 };
+
 
 struct PlayerInfo
 {
     uint64  id;
-    FactionType faction;
+    wstring nickname;
+    Faction faction;
     ChampionType champion;
+    bool host;
 
     ObjectMove posInfo;
-    // Vec3 Pos;
 };
 
 struct PlayerInfoPacket
 {
     uint64  id;
-    FactionType faction;
+    Faction faction;
     ChampionType champion;
     bool host;
     ObjectMove posInfo;
@@ -190,11 +195,18 @@ struct AnimInfoPacket {
     }
 };
 
-struct SkillInfo {
-    uint64 OwnerId;
-    uint64 TargetId;
-    uint16 SkillLevel;
-    SkillType skillType;
+struct SkillInfo
+{
+    UINT64    OwnerId;    // 스킬을 사용한 플레이어 id
+    UINT64    TargetId;   // 타겟팅일시 맞을 플레이어 id (논타겟일 경우 -1)
+    UINT16    SkillLevel; // 스킬레벨
+    SkillType skillType;  // 어떤 스킬인지 모아둔 enum 중 하나
+};
+
+enum WaitingStatus
+{
+    WAITING = 0,
+    RUN = 1,
 };
 
 extern PlayerInfo MyPlayer;

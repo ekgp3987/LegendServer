@@ -82,7 +82,7 @@ void ClientPacketHandler::Handle_C_LOGIN(PacketSessionRef& session, BYTE* buffer
 	wcout << "닉네임은 " << resultNickName << "입니다." << endl;
 
 	bool success = true;
-	FactionType faction = FactionType::BLUE;
+	Faction faction = Faction::BLUE;
 
 	//플레이어 생성	
 	
@@ -95,12 +95,12 @@ void ClientPacketHandler::Handle_C_LOGIN(PacketSessionRef& session, BYTE* buffer
 		//플레이어 룸에 넣어줌
 		if (GRoom.GetBluePlayerSize() > GRoom.GetRedPlayerSize()) {
 			GRoom.RedEnter(playerRef, gameSession);
-			faction = FactionType::RED;
+			faction = Faction::RED;
 			playerRef->SetFaction(faction);
 		}
 		else if (GRoom.GetRedPlayerSize() >= GRoom.GetBluePlayerSize()) {
 			GRoom.BlueEnter(playerRef, gameSession);
-			faction = FactionType::BLUE;
+			faction = Faction::BLUE;
 			playerRef->SetFaction(faction);
 		}
 	
@@ -297,10 +297,10 @@ void ClientPacketHandler::Handle_C_SKILL_PROJECTILE(PacketSessionRef& session, B
 
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
-	if (gameSession->GetPlayer()->GetHost() == false) {
-		cout << "방장이 아닙니다." << endl;
-		return;
-	}
+	//if (gameSession->GetPlayer()->GetHost() == false) {
+	//	cout << "방장이 아닙니다." << endl;
+	//	return;
+	//}
 
 	BufferReader br(buffer, len);
 
@@ -404,7 +404,7 @@ void ClientPacketHandler::Handle_C_SKILL_CC(PacketSessionRef& session, BYTE* buf
 		return;
 	}
 
-	PKT_S_SKILL_CC_WRITE pktWriter(pkt->objectId, pkt->CCType, pkt->time);
+	PKT_S_SKILL_CC_WRITE pktWriter(pkt->objecId, pkt->CC, pkt->time);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
