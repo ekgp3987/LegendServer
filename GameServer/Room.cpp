@@ -178,7 +178,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 					ObjectMove::Pos pos = { 10.f,10.f,10.f };
 					CC CCType = CC::CLEAR;
 					ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
-					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, Faction::BLUE, laneType, objectMove);
+					SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::MELEE_MINION, Faction::BLUE, laneType, objectMove);
 
 					PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 					SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
@@ -195,7 +195,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 					ObjectMove::Pos pos = { 10.f,10.f,10.f };
 					CC CCType = CC::CLEAR;
 					ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
-					SetObjectInfo(objectInfo, minionRef->GetObjectId(), ObjectType::MELEE_MINION, Faction::RED, laneType, objectMove);
+					SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::MELEE_MINION, Faction::RED, laneType, objectMove);
 
 
 					PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -272,10 +272,10 @@ void Room::TimeThread()
 	}
 }
 
-void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, ObjectType _objectType, Faction _faction, Lane _lane, ObjectMove _objectMove)
+void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, UnitType _unitType, Faction _faction, Lane _lane, ObjectMove _objectMove)
 {
 	_objectInfo.objectId = _objectId;
-	_objectInfo.objectType = _objectType;
+	_objectInfo.unitType = _unitType;
 	_objectInfo.faction = _faction;
 	_objectInfo.lane = _lane;
 	_objectInfo.objectMove = _objectMove;

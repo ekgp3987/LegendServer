@@ -10,28 +10,35 @@ enum class Faction
     END,
 };
 
-enum class ObjectType {
-    PLAYER,
+// LoL 게임 내에서 플레이어가 상호작용할 수 있는 모든 오브젝트
+enum class UnitType
+{
+    CHAMPION,
 
     MELEE_MINION,
-    CASTER_MINION,
+    RANGED_MINION,
     SIEGE_MINION,
     SUPER_MINION,
 
-    RAPTORS,
-    WOLF,
-    KRUG,
+    RAPTORS, // 엄마, 자식들
+    WOLF,    // 대장, 부하
+    KRUG,    // 돌거북 큰애, 작은 애
     DRAGON,
-    BARON,
+    BARON,   // 렌더링만
 
-    TOWER,
+    JUNGLE_RED,  // 붉은 덩굴정령
+    JUNGLE_BLUE, // 푸른 파수꾼
+
+    TURRET,
     INHIBITOR,
     NEXUS,
 
     PROJECTILE,
+    EFFECT,
 
     END,
 };
+
 
 enum class Lane
 {
@@ -118,25 +125,23 @@ public:
     CC  CC;
 };
 
-
 struct ObjectInfo {
     ObjectInfo() {}
-    ObjectInfo(uint64 _objectId, ObjectType _objectType, Faction _faction, Lane _lane, ObjectMove _objectMove)
+    ObjectInfo(uint64 _objectId, UnitType _unitType, Faction _faction, Lane _lane, ObjectMove _objectMove)
         : objectId(_objectId)
-        , objectType(_objectType)
+        , unitType(_unitType)
         , faction(_faction)
         , lane(_lane)
         , objectMove(_objectMove)
     {}
     ~ObjectInfo() {}
 
-    uint64 objectId;
-    ObjectType objectType;
+    uint64     objectId;
+    UnitType   unitType;
     Faction    faction;
     Lane       lane;
     ObjectMove objectMove;
 };
-
 
 struct PlayerInfo
 {
@@ -197,10 +202,22 @@ struct AnimInfoPacket {
 
 struct SkillInfo
 {
+public:
+    struct OffsetPos
+    {
+        float x;
+        float y;
+        float z;
+    };
+
+    UINT64    SkillId;        // 스킬 투사체 id
     UINT64    OwnerId;    // 스킬을 사용한 플레이어 id
-    UINT64    TargetId;   // 타겟팅일시 맞을 플레이어 id (논타겟일 경우 -1)
-    UINT16    SkillLevel; // 스킬레벨
-    SkillType skillType;  // 어떤 스킬인지 모아둔 enum 중 하나
+    UINT64    TargetId;    // 타겟팅일시 맞을 플레이어 id (논타겟일 경우 -1)
+
+    UINT16    SkillLevel;  // 스킬레벨
+    SkillType skillType;    // 어떤 스킬인지 모아둔 enum 중 하나
+
+    OffsetPos offsetPos;  // 중점기준 offset
 };
 
 enum WaitingStatus

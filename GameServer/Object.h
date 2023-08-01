@@ -9,7 +9,7 @@ static atomic<uint64>	objectStaticId = 0;
 class Object
 {
 public:
-	Object(ObjectType _objectType);
+	Object(UnitType _unitType);
 	virtual ~Object();
 
 public:
@@ -22,7 +22,7 @@ public:
 
 private:
 	uint64							objectId=0;
-	ObjectType				objectType;
+	UnitType					   unitType;
 	Room*							ownerRoom;
 	Faction				       factionType;
 };

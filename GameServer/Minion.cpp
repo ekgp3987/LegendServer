@@ -3,7 +3,7 @@
 #include "ServerFunc.h"
 
 Minion::Minion()
-	:Object(ObjectType::MELEE_MINION)
+	:Object(UnitType::MELEE_MINION)
 {
 }
 

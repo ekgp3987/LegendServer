@@ -1,8 +1,8 @@
 #include "pch.h"
 #include "Object.h"
 
-Object::Object(ObjectType _objectType)
-	: objectType(_objectType)
+Object::Object(UnitType _unitType)
+	: unitType(_unitType)
 	, ownerRoom(nullptr)
 	, factionType(Faction::END)
 {

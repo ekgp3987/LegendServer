@@ -3,7 +3,7 @@
 #include "ServerFunc.h"
 
 Player::Player()
-	: Object(ObjectType::PLAYER)
+	: Object(UnitType::CHAMPION)
 {
 }
 

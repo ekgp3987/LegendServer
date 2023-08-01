@@ -2,7 +2,7 @@
 #include "Projectile.h"
 
 Projectile::Projectile()
-	:Object(ObjectType::PROJECTILE)
+	:Object(UnitType::PROJECTILE)
 {
 }
 
