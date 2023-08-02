@@ -53,6 +53,9 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	case C_SKILL_CC:
 		Handle_C_SKILL_CC(session, buffer, len);
 		break;
+	case C_DESPAWN_OBJECT:
+		Handle_C_SKILL_CC(session, buffer, len);
+		break;
 	default:
 		break;
 	}
@@ -313,6 +316,7 @@ void ClientPacketHandler::Handle_C_SKILL_PROJECTILE(PacketSessionRef& session, B
 	}
 	//여기까지 패킷 받는 부분 밑에서 보내는 패킷 작성
 
+	int projectileNum = pkt->skillInfo.projectileCount;
 
 	Projectile* projectile = new Projectile;
 
@@ -323,6 +327,11 @@ void ClientPacketHandler::Handle_C_SKILL_PROJECTILE(PacketSessionRef& session, B
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	GRoom.Broadcast(sendBuffer, nullptr);
+
+	for (int i = 1; i < projectileNum; i++) {
+		delete projectile;
+		projectile = new Projectile;
+	}
 
 	delete projectile;
 }
@@ -405,6 +414,36 @@ void ClientPacketHandler::Handle_C_SKILL_CC(PacketSessionRef& session, BYTE* buf
 	}
 
 	PKT_S_SKILL_CC_WRITE pktWriter(pkt->objecId, pkt->CC, pkt->time);
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_DESPAWN_OBJECT(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "C_SKILL_CC에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_DESPAWN_OBJECT* pkt = reinterpret_cast<PKT_C_DESPAWN_OBJECT*>(buffer);
+
+	if (pkt->Validate() == false)
+	{
+		cout << "C_SKILL_CC Validate 실패" << endl;
+		return;
+	}
+
+	GRoom.RemoveObject(pkt->objId);
+
+	PKT_S_DESPAWN_OBJECT_WRITE pktWriter(pkt->objId, pkt->time);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 

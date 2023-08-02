@@ -13,6 +13,7 @@ public:
 	void GameStart(SendBufferRef sendBuffer, uint64 milliSeconds);
 	void GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _success);
 	void TimeThread();
+	void RemoveObject(uint64 _objectID);
 
 	void SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, UnitType _unitType, Faction _factionType, Lane _laneType, ObjectMove _objectMove);
 	void SetObjectMove(OUT ObjectMove& _objectMove, int _LV, float _HP, float _MP, float _AD, float _Defence, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos);

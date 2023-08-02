@@ -38,6 +38,9 @@ enum
 
 	C_SKILL_CC = 21,
 	S_SKILL_CC = 22,
+
+	C_DESPAWN_OBJECT = 23,
+	S_DESPAWN_OBJECT = 24,
 };
 
 class ClientPacketHandler
@@ -54,6 +57,7 @@ public:
 	static void Handle_C_SKILL_HIT(PacketSessionRef& session, BYTE* buffer, int32 len);
 	static void Handle_C_SKILL_DAMAGE(PacketSessionRef& session, BYTE* buffer, int32 len);
 	static void Handle_C_SKILL_CC(PacketSessionRef& session, BYTE* buffer, int32 len);
+	static void Handle_C_DESPAWN_OBJECT(PacketSessionRef& session, BYTE* buffer, int32 len);
 
 private:
 	USE_LOCK;
@@ -747,6 +751,50 @@ struct PKT_S_SKILL_CC {
 };
 #pragma pack()
 
+#pragma pack(1)
+struct PKT_C_DESPAWN_OBJECT {
+	uint16		packetSize;
+	uint16		packetId;
+	uint64		objId;
+	float		time;
+
+	bool Validate()
+	{
+		uint32 size = 0;
+		size += sizeof(PKT_S_SKILL_CC);
+		if (packetSize < size)
+			return false;
+
+		if (size != packetSize)
+			return false;
+
+		return true;
+	}
+};
+#pragma pack()
+
+#pragma pack(1)
+struct PKT_S_DESPAWN_OBJECT {
+	uint16		packetSize;
+	uint16		packetId;
+	uint64		objId;
+	float		time;
+
+	bool Validate()
+	{
+		uint32 size = 0;
+		size += sizeof(PKT_S_SKILL_CC);
+		if (packetSize < size)
+			return false;
+
+		if (size != packetSize)
+			return false;
+
+		return true;
+	}
+};
+#pragma pack()
+
 //===============================
 // 이 밑은 패킷 Write 클래스 모음입니다. |
 // ==============================
@@ -1187,7 +1235,67 @@ private:
 };
 #pragma pack()
 
+#pragma pack(1)
+class PKT_C_DESPAWN_OBJECT_WRITE {
+public:
+	PKT_C_DESPAWN_OBJECT_WRITE(uint64 _objId, float _time) {
+		_sendBuffer = GSendBufferManager->Open(4096);
+		// 초기화
+		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
 
+		_pkt = _bw.Reserve<PKT_C_DESPAWN_OBJECT>();
+		_pkt->packetSize = 0; // To Fill
+		_pkt->packetId = S_SKILL_CC;
+		_pkt->objId = _objId;
+		_pkt->time = _time;
+	}
+
+	SendBufferRef CloseAndReturn()
+	{
+		// 패킷 사이즈 계산
+		_pkt->packetSize = _bw.WriteSize();
+
+		_sendBuffer->Close(_bw.WriteSize());
+		return _sendBuffer;
+	}
+
+private:
+	PKT_C_DESPAWN_OBJECT* _pkt = nullptr;
+	SendBufferRef _sendBuffer;
+	BufferWriter _bw;
+};
+#pragma pack()
+
+#pragma pack(1)
+class PKT_S_DESPAWN_OBJECT_WRITE {
+public:
+	PKT_S_DESPAWN_OBJECT_WRITE(uint64 _objId, float _time) {
+		_sendBuffer = GSendBufferManager->Open(4096);
+		// 초기화
+		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
+
+		_pkt = _bw.Reserve<PKT_S_DESPAWN_OBJECT>();
+		_pkt->packetSize = 0; // To Fill
+		_pkt->packetId = S_SKILL_CC;
+		_pkt->objId = _objId;
+		_pkt->time = _time;
+	}
+
+	SendBufferRef CloseAndReturn()
+	{
+		// 패킷 사이즈 계산
+		_pkt->packetSize = _bw.WriteSize();
+
+		_sendBuffer->Close(_bw.WriteSize());
+		return _sendBuffer;
+	}
+
+private:
+	PKT_S_DESPAWN_OBJECT* _pkt = nullptr;
+	SendBufferRef _sendBuffer;
+	BufferWriter _bw;
+};
+#pragma pack()
 
 
 

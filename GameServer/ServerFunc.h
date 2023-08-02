@@ -209,13 +209,13 @@ public:
         float y;
         float z;
     };
+    UINT64    SkillId;    // 스킬 투사체 id
+    UINT64    OwnerId;    // 스킬을 사용한 플레이어 id
+    UINT64    TargetId;   // 타겟팅일시 맞을 플레이어 id (논타겟일 경우 -1)
 
-    UINT64		SkillId;    // 스킬 투사체 id
-    UINT64		OwnerId;    // 스킬을 사용한 플레이어 id
-    UINT64		TargetId;   // 타겟팅일시 맞을 플레이어 id (논타겟일 경우 -1)
-
-    UINT16		SkillLevel; // 스킬레벨
-    SkillType	skillType;  // 어떤 스킬인지 모아둔 enum 중 하나
+    UINT16    SkillLevel; // 스킬레벨
+    SkillType skillType;  // 어떤 스킬인지 모아둔 enum 중 하나
+    int        projectileCount; // 투사체가 몇개인지
 
     vec3Server	offsetPos;  // 중점기준 offset
 

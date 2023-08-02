@@ -272,6 +272,16 @@ void Room::TimeThread()
 	}
 }
 
+void Room::RemoveObject(uint64 _objectID)
+{
+	WRITE_LOCK;
+	_bluePlayers.erase(_objectID);
+	_redPlayers.erase(_objectID);
+	_allPlayers.erase(_objectID);
+	_blueMinions.erase(_objectID);
+	_redMinions.erase(_objectID);
+}
+
 void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, UnitType _unitType, Faction _faction, Lane _lane, ObjectMove _objectMove)
 {
 	_objectInfo.objectId = _objectId;
