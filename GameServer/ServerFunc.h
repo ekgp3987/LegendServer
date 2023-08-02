@@ -1,6 +1,10 @@
 #pragma once
 
-
+enum class DimensionType
+{
+    TwoD,
+    ThreeD,
+};
 
 enum class Faction
 {
@@ -231,6 +235,39 @@ enum WaitingStatus
 {
     WAITING = 0,
     RUN = 1,
+};
+
+struct SoundInfoPacket
+{
+    struct vec3Server
+    {
+        float x;
+        float y;
+        float z;
+    };
+
+    DimensionType dimensionType;
+    Faction faction;
+    int iRoopCount;
+    float fVolume;
+    bool bOverlap;
+    float fRange;
+    vec3Server soundPos;
+
+    uint16 soundNameOffset;
+    uint16 soundNameCount;
+
+    struct soundNameItem {
+        wchar_t soundName;
+    };
+
+    bool Validate(BYTE* packetStart, uint16 packetSize, OUT uint32& size) {
+        if (soundNameOffset + soundNameCount * sizeof(soundNameItem) > packetSize)
+            return false;
+
+        size += soundNameCount * sizeof(soundNameItem);
+        return true;
+    }
 };
 
 extern PlayerInfo MyPlayer;

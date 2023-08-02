@@ -56,6 +56,12 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	case C_DESPAWN_OBJECT:
 		Handle_C_SKILL_CC(session, buffer, len);
 		break;
+	case C_KDA_CS:
+		Handle_C_KDA_CS(session, buffer, len);
+		break;
+	case C_SOUND:
+		Handle_C_SOUND(session, buffer, len);
+		break;
 	default:
 		break;
 	}
@@ -422,7 +428,7 @@ void ClientPacketHandler::Handle_C_SKILL_CC(PacketSessionRef& session, BYTE* buf
 
 void ClientPacketHandler::Handle_C_DESPAWN_OBJECT(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
-	cout << "C_SKILL_CC에 진입" << endl;
+	cout << "Handle_C_DESPAWN_OBJECT에 진입" << endl;
 
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
@@ -437,13 +443,84 @@ void ClientPacketHandler::Handle_C_DESPAWN_OBJECT(PacketSessionRef& session, BYT
 
 	if (pkt->Validate() == false)
 	{
-		cout << "C_SKILL_CC Validate 실패" << endl;
+		cout << "Handle_C_DESPAWN_OBJECT Validate 실패" << endl;
 		return;
 	}
 
 	GRoom.RemoveObject(pkt->objId);
 
 	PKT_S_DESPAWN_OBJECT_WRITE pktWriter(pkt->objId, pkt->time);
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_KDA_CS(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "Handle_C_KDA_CS에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	if (gameSession->GetPlayer()->GetHost() == false) {
+		cout << "방장이 아닙니다." << endl;
+		return;
+	}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_KDA_CS* pkt = reinterpret_cast<PKT_C_KDA_CS*>(buffer);
+
+	if (pkt->Validate() == false)
+	{
+		cout << "Handle_C_KDA_CS Validate 실패" << endl;
+		return;
+	}
+
+	PKT_S_KDA_CS_WRITE pktWriter(pkt->killerId, pkt->deadObjUnitType);
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_SOUND(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "Handle_C_SOUND에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	//if (gameSession->GetPlayer()->GetHost() == false) {
+	//	cout << "방장이 아닙니다." << endl;
+	//	return;
+	//}
+
+	BufferReader br(buffer, len);
+
+	PKT_C_SOUND* pkt = reinterpret_cast<PKT_C_SOUND*>(buffer);
+
+
+	if (pkt->Validate() == false)
+	{
+		cout << "Handle_C_SOUND Validate 실패" << endl;
+		return;
+	}
+
+	SoundInfoPacket soundInfo = pkt->soundInfo;
+
+	PKT_C_SOUND::SoundNameList soundNames = pkt->GetSoundNameList();
+
+	wstring resultSoundName = L"";
+	for (auto& soundName : soundNames) {
+		resultSoundName.push_back(soundName.soundName);
+	}
+
+	PKT_S_SOUND_WRITE pktWriter(soundInfo);
+
+	PKT_S_SOUND_WRITE::SoundNameList soundName = pktWriter.ReserveAnimNameList(resultSoundName.size());
+	for (int i = 0; i < resultSoundName.size(); i++) {
+		soundName[i] = { resultSoundName[i] };
+	}
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 

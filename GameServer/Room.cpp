@@ -8,6 +8,7 @@
 #include <iostream>
 #include <sstream>
 #include "ServerFunc.h"
+#include <functional>
 
 Room GRoom;
 
@@ -146,6 +147,8 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _success)
 {
+	//thread t2(std::bind(&Room::TimeThread, this));
+
 	thread t1([this, _sendBuffer, milliSeconds, _success]() {
 		int a = 0;
 
@@ -261,6 +264,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 	});
 
 	t1.detach();
+	//t2.detach();
 }
 
 void Room::TimeThread()
@@ -275,9 +279,9 @@ void Room::TimeThread()
 void Room::RemoveObject(uint64 _objectID)
 {
 	WRITE_LOCK;
-	_bluePlayers.erase(_objectID);
-	_redPlayers.erase(_objectID);
-	_allPlayers.erase(_objectID);
+	//_bluePlayers.erase(_objectID);
+	//_redPlayers.erase(_objectID);
+	//_allPlayers.erase(_objectID);
 	_blueMinions.erase(_objectID);
 	_redMinions.erase(_objectID);
 }
