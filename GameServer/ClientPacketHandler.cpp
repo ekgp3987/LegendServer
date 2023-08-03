@@ -54,7 +54,7 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 		Handle_C_SKILL_CC(session, buffer, len);
 		break;
 	case C_DESPAWN_OBJECT:
-		Handle_C_SKILL_CC(session, buffer, len);
+		Handle_C_DESPAWN_OBJECT(session, buffer, len);
 		break;
 	case C_KDA_CS:
 		Handle_C_KDA_CS(session, buffer, len);
@@ -432,10 +432,10 @@ void ClientPacketHandler::Handle_C_DESPAWN_OBJECT(PacketSessionRef& session, BYT
 
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
-	if (gameSession->GetPlayer()->GetHost() == false) {
-		cout << "방장이 아닙니다." << endl;
-		return;
-	}
+	//if (gameSession->GetPlayer()->GetHost() == false) {
+	//	cout << "방장이 아닙니다." << endl;
+	//	return;
+	//}
 
 	BufferReader br(buffer, len);
 

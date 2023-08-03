@@ -772,7 +772,7 @@ struct PKT_C_DESPAWN_OBJECT {
 	bool Validate()
 	{
 		uint32 size = 0;
-		size += sizeof(PKT_S_SKILL_CC);
+		size += sizeof(PKT_C_DESPAWN_OBJECT);
 		if (packetSize < size)
 			return false;
 
@@ -794,7 +794,7 @@ struct PKT_S_DESPAWN_OBJECT {
 	bool Validate()
 	{
 		uint32 size = 0;
-		size += sizeof(PKT_S_SKILL_CC);
+		size += sizeof(PKT_S_DESPAWN_OBJECT);
 		if (packetSize < size)
 			return false;
 
