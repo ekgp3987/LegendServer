@@ -415,7 +415,7 @@ void ClientPacketHandler::Handle_C_KDA_CS(PacketSessionRef& session, BYTE* buffe
 		return;
 	}
 
-	PKT_S_KDA_CS_WRITE pktWriter(pkt->killerId, pkt->deadObjUnitType, pkt->victimId);
+	PKT_S_KDA_CS_WRITE pktWriter(pkt->kdacsInfo);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 

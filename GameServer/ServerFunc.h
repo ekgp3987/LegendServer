@@ -270,4 +270,11 @@ struct SoundInfoPacket
     }
 };
 
+struct KDACSInfo
+{
+    UINT64      killerId;
+    UINT64      victimId;
+    UnitType   deadObjUnitType;
+};
+
 extern PlayerInfo MyPlayer;

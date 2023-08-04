@@ -712,9 +712,7 @@ struct PKT_S_DESPAWN_OBJECT {
 struct PKT_C_KDA_CS {
 	uint16		packetSize;
 	uint16		packetId;
-	uint64		killerId;
-	UnitType	deadObjUnitType;
-	uint64		victimId;
+	KDACSInfo kdacsInfo;
 
 	bool Validate()
 	{
@@ -735,9 +733,7 @@ struct PKT_C_KDA_CS {
 struct PKT_S_KDA_CS {
 	uint16		packetSize;
 	uint16		packetId;
-	uint64		killerId;
-	UnitType	deadObjUnitType;
-	uint64		victimId;
+	KDACSInfo kdacsInfo;
 
 	bool Validate()
 	{
@@ -1304,7 +1300,7 @@ private:
 #pragma pack(1)
 class PKT_C_KDA_CS_WRITE {
 public:
-	PKT_C_KDA_CS_WRITE(uint64 _killerId, UnitType _deadObjUnitType, uint64 _victimId) {
+	PKT_C_KDA_CS_WRITE(KDACSInfo _kdacsInfo) {
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
 		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
@@ -1312,9 +1308,7 @@ public:
 		_pkt = _bw.Reserve<PKT_C_KDA_CS>();
 		_pkt->packetSize = 0; // To Fill
 		_pkt->packetId = C_KDA_CS;
-		_pkt->killerId = _killerId;
-		_pkt->deadObjUnitType = _deadObjUnitType;
-		_pkt->victimId = _victimId;
+		_pkt->kdacsInfo = _kdacsInfo;
 	}
 
 	SendBufferRef CloseAndReturn()
@@ -1336,7 +1330,7 @@ private:
 #pragma pack(1)
 class PKT_S_KDA_CS_WRITE {
 public:
-	PKT_S_KDA_CS_WRITE(uint64 _killerId, UnitType _deadObjUnitType, uint64 _victimId) {
+	PKT_S_KDA_CS_WRITE(KDACSInfo _kdacsInfo) {
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
 		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
@@ -1344,9 +1338,7 @@ public:
 		_pkt = _bw.Reserve<PKT_S_KDA_CS>();
 		_pkt->packetSize = 0; // To Fill
 		_pkt->packetId = S_KDA_CS;
-		_pkt->killerId = _killerId;
-		_pkt->deadObjUnitType = _deadObjUnitType;
-		_pkt->victimId = _victimId;
+		_pkt->kdacsInfo = _kdacsInfo;
 	}
 
 	SendBufferRef CloseAndReturn()
