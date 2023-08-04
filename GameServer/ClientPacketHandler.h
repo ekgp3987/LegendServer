@@ -714,6 +714,7 @@ struct PKT_C_KDA_CS {
 	uint16		packetId;
 	uint64		killerId;
 	UnitType	deadObjUnitType;
+	uint64		victimId;
 
 	bool Validate()
 	{
@@ -736,6 +737,7 @@ struct PKT_S_KDA_CS {
 	uint16		packetId;
 	uint64		killerId;
 	UnitType	deadObjUnitType;
+	uint64		victimId;
 
 	bool Validate()
 	{
@@ -1302,7 +1304,7 @@ private:
 #pragma pack(1)
 class PKT_C_KDA_CS_WRITE {
 public:
-	PKT_C_KDA_CS_WRITE(uint64 _killerId, UnitType _deadObjUnitType) {
+	PKT_C_KDA_CS_WRITE(uint64 _killerId, UnitType _deadObjUnitType, uint64 _victimId) {
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
 		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
@@ -1312,6 +1314,7 @@ public:
 		_pkt->packetId = C_KDA_CS;
 		_pkt->killerId = _killerId;
 		_pkt->deadObjUnitType = _deadObjUnitType;
+		_pkt->victimId = _victimId;
 	}
 
 	SendBufferRef CloseAndReturn()
@@ -1333,7 +1336,7 @@ private:
 #pragma pack(1)
 class PKT_S_KDA_CS_WRITE {
 public:
-	PKT_S_KDA_CS_WRITE(uint64 _killerId, UnitType _deadObjUnitType) {
+	PKT_S_KDA_CS_WRITE(uint64 _killerId, UnitType _deadObjUnitType, uint64 _victimId) {
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
 		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
@@ -1343,6 +1346,7 @@ public:
 		_pkt->packetId = S_KDA_CS;
 		_pkt->killerId = _killerId;
 		_pkt->deadObjUnitType = _deadObjUnitType;
+		_pkt->victimId = _victimId;
 	}
 
 	SendBufferRef CloseAndReturn()

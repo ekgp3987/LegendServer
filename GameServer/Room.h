@@ -15,6 +15,13 @@ public:
 	void TimeThread();
 	void RemoveObject(uint64 _objectID);
 
+public://Spawn 관련 함수 모음. GameStartSpawn()에서 호출 중.
+	void NexusSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds);
+	void InhibitorSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds);
+	void TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds);
+	void MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds);
+
+public://Set(), Get() 함수 모음
 	void SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, UnitType _unitType, Faction _factionType, Lane _laneType, ObjectMove _objectMove);
 	void SetObjectMove(OUT ObjectMove& _objectMove, int _LV, float _HP, float _MP, float _AD, float _Defence, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos);
 
@@ -33,7 +40,9 @@ private:
 
 	map<uint64, MinionRef> _blueMinions;
 	map<uint64, MinionRef> _redMinions;
-
+	/// <summary>
+	/// 
+	/// </summary>
 	float second;
 };
 
