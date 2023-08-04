@@ -47,12 +47,6 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	case C_SKILL_HIT:
 		Handle_C_SKILL_HIT(session, buffer, len);
 		break;
-	case C_SKILL_DAMAGE:
-		Handle_C_SKILL_DAMAGE(session, buffer, len);
-		break;
-	case C_SKILL_CC:
-		Handle_C_SKILL_CC(session, buffer, len);
-		break;
 	case C_DESPAWN_OBJECT:
 		Handle_C_DESPAWN_OBJECT(session, buffer, len);
 		break;
@@ -364,62 +358,6 @@ void ClientPacketHandler::Handle_C_SKILL_HIT(PacketSessionRef& session, BYTE* bu
 	}
 
 	PKT_S_SKILL_HIT_WRITE pktWriter(pkt->objecId, pkt->skillInfo);
-
-	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-
-	GRoom.Broadcast(sendBuffer, nullptr);
-}
-
-void ClientPacketHandler::Handle_C_SKILL_DAMAGE(PacketSessionRef& session, BYTE* buffer, int32 len)
-{
-	cout << "C_SKILL_DAMAGE에 진입" << endl;
-
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-
-	if (gameSession->GetPlayer()->GetHost() == false) {
-		cout << "방장이 아닙니다." << endl;
-		return;
-	}
-
-	BufferReader br(buffer, len);
-
-	PKT_C_SKILL_DAMAGE* pkt = reinterpret_cast<PKT_C_SKILL_DAMAGE*>(buffer);
-
-	if (pkt->Validate() == false)
-	{
-		cout << "C_SKILL_DAMAGE Validate 실패" << endl;
-		return;
-	}
-
-	PKT_S_SKILL_DAMAGE_WRITE pktWriter(pkt->objecId, pkt->damage);
-
-	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-
-	GRoom.Broadcast(sendBuffer, nullptr);
-}
-
-void ClientPacketHandler::Handle_C_SKILL_CC(PacketSessionRef& session, BYTE* buffer, int32 len)
-{
-	cout << "C_SKILL_CC에 진입" << endl;
-
-	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
-
-	if (gameSession->GetPlayer()->GetHost() == false) {
-		cout << "방장이 아닙니다." << endl;
-		return;
-	}
-
-	BufferReader br(buffer, len);
-
-	PKT_C_SKILL_CC* pkt = reinterpret_cast<PKT_C_SKILL_CC*>(buffer);
-
-	if (pkt->Validate() == false)
-	{
-		cout << "C_SKILL_CC Validate 실패" << endl;
-		return;
-	}
-
-	PKT_S_SKILL_CC_WRITE pktWriter(pkt->objecId, pkt->CC, pkt->time);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
