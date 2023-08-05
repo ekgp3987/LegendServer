@@ -100,17 +100,22 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	vector<ObjectMove> playerMove;
 	{
 		ObjectMove mPlayerMove;
-		mPlayerMove.moveDir = ObjectMove::MoveDir{ 0.0f,0.0f,0.0f };
-		mPlayerMove.pos = ObjectMove::Pos{ 0.0f,0.0f,0.0f };
+		mPlayerMove.moveDir = ObjectMove::MoveDir{0.f,  -3.14 / 2, 0.f };
+		mPlayerMove.pos = ObjectMove::Pos{0.0f, 0.0f, 0.0f };
 
-		mPlayerMove.pos = ObjectMove::Pos{ 10.0f,0.0f,10.0f };
+		// Blue, Red, Blue Red 순으로 나중에 좌표 바꿔야 한다. (현재는 blue 에 다 생김)
+		mPlayerMove.pos = ObjectMove::Pos{ 53.0f,30.0f,27.0f };
 		playerMove.push_back(mPlayerMove);
-		mPlayerMove.pos = ObjectMove::Pos{ 30.0f,0.0f,10.0f };
+
+		mPlayerMove.pos = ObjectMove::Pos{ 95.0f, 30.0f, 41.0f };
 		playerMove.push_back(mPlayerMove);
-		mPlayerMove.pos = ObjectMove::Pos{ 10.0f,0.0f,100.0f };
+
+		mPlayerMove.pos = ObjectMove::Pos{ 88.0f, 30.0f, 86.0f };
 		playerMove.push_back(mPlayerMove);
-		mPlayerMove.pos = ObjectMove::Pos{ 30.0f,0.0f,10.0f };
+
+		mPlayerMove.pos = ObjectMove::Pos{47.f, 30.f, 97.f };
 		playerMove.push_back(mPlayerMove);
+
 	}
 
 	//플레이어 정보를 패킷에 넣음
