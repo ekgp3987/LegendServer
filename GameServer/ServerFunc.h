@@ -184,8 +184,9 @@ struct PlayerInfoPacket
 
 struct AnimInfoPacket {
     uint16 targetId;
-    bool bRepeat;
-    bool blend;
+    bool bRepeat;            // 애니메이션 반복 여부
+    bool bRepeatBlend;  // 블렌드 반복 여부
+    bool blend;               // 블렌드 사용 여부
     float blendTime;
 
     uint16 animNameOffset;
