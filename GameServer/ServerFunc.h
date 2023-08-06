@@ -24,14 +24,38 @@ enum class UnitType
     SIEGE_MINION,
     SUPER_MINION,
 
-    RAPTORS, // ¾ö¸¶, ÀÚ½Äµé
-    WOLF,    // ´ëÀå, ºÎÇÏ
-    KRUG,    // µ¹°ÅºÏ Å«¾Ö, ÀÛÀº ¾Ö
+    SOUTH_GROMP,
+    SOUTH_MURKWOLF,
+    SOUTH_MURKWOLF_MINI_L,
+    SOUTH_MURKWOLF_MINI_R,
+    SOUTH_RAZORBEAK,
+    SOUTH_RAZORBEAK_MINI_1,
+    SOUTH_RAZORBEAK_MINI_2,
+    SOUTH_RAZORBEAK_MINI_3,
+    SOUTH_RAZORBEAK_MINI_4,
+    SOUTH_RAZORBEAK_MINI_5,
+    SOUTH_KRUG,
+    SOUTH_KRUG_MINI,
+    SOUTH_RED,      // ºÓÀº µ¢±¼Á¤·É
+    SOUTH_BLUE ,    // Çª¸¥ ÆÄ¼ö²Û
+
+    NORTH_GROMP,
+    NORTH_MURKWOLF,
+    NORTH_MURKWOLF_MINI_L,
+    NORTH_MURKWOLF_MINI_R,
+    NORTH_RAZORBEAK,
+    NORTH_RAZORBEAK_MINI_1,
+    NORTH_RAZORBEAK_MINI_2,
+    NORTH_RAZORBEAK_MINI_3,
+    NORTH_RAZORBEAK_MINI_4,
+    NORTH_RAZORBEAK_MINI_5,
+    NORTH_KRUG,
+    NORTH_KRUG_MINI,
+    NORTH_RED,             // ºÓÀº µ¢±¼Á¤·É
+    NORTH_BLUE,            // Çª¸¥ ÆÄ¼ö²Û
+
     DRAGON,
     BARON,   // ·»´õ¸µ¸¸
-
-    JUNGLE_RED,  // ºÓÀº µ¢±¼Á¤·É
-    JUNGLE_BLUE, // Çª¸¥ ÆÄ¼ö²Û
 
     TURRET,
     INHIBITOR,
@@ -42,6 +66,34 @@ enum class UnitType
 
     END,
 };
+
+//enum class UnitType
+//{
+//    CHAMPION,
+//
+//    MELEE_MINION,
+//    RANGED_MINION,
+//    SIEGE_MINION,
+//    SUPER_MINION,
+//
+//    RAPTORS, // ¾ö¸¶, ÀÚ½Äµé
+//    WOLF,    // ´ëÀå, ºÎÇÏ
+//    KRUG,    // µ¹°ÅºÏ Å«¾Ö, ÀÛÀº ¾Ö
+//    DRAGON,
+//    BARON,   // ·»´õ¸µ¸¸
+//
+//    JUNGLE_RED,  // ºÓÀº µ¢±¼Á¤·É
+//    JUNGLE_BLUE, // Çª¸¥ ÆÄ¼ö²Û
+//
+//    TURRET,
+//    INHIBITOR,
+//    NEXUS,
+//
+//    PROJECTILE,
+//    EFFECT,
+//
+//    END,
+//};
 
 
 enum class Lane
