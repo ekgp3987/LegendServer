@@ -37,6 +37,9 @@
     <Filter Include="GameContents\Object\Turret">
       <UniqueIdentifier>{8a46b5a8-9068-4a3c-b9f9-9df53a58f703}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameContents\Object\Monster">
+      <UniqueIdentifier>{7b08a46c-c08c-485c-a6d6-9653ab2c13df}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -87,6 +90,9 @@
     <ClCompile Include="Turret.cpp">
       <Filter>GameContents\Object\Turret</Filter>
     </ClCompile>
+    <ClCompile Include="Monster.cpp">
+      <Filter>GameContents\Object\Monster</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -125,14 +131,17 @@
     <ClInclude Include="Projectile.h">
       <Filter>GameContents\Object\Projectile</Filter>
     </ClInclude>
-    <ClInclude Include="Nexus.h">
-      <Filter>GameContents\Object\Nexus</Filter>
-    </ClInclude>
     <ClInclude Include="Inhibitor.h">
       <Filter>GameContents\Object\Inhibitor</Filter>
     </ClInclude>
     <ClInclude Include="Turret.h">
       <Filter>GameContents\Object\Turret</Filter>
+    </ClInclude>
+    <ClInclude Include="Monster.h">
+      <Filter>GameContents\Object\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="Nexus.h">
+      <Filter>GameContents\Object\Nexus</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

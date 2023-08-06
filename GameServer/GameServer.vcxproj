@@ -164,6 +164,7 @@
     <ClCompile Include="GameSessionManager.cpp" />
     <ClCompile Include="Inhibitor.cpp" />
     <ClCompile Include="Minion.cpp" />
+    <ClCompile Include="Monster.cpp" />
     <ClCompile Include="Nexus.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="pch.cpp">
@@ -186,6 +187,7 @@
     <ClInclude Include="GameSessionManager.h" />
     <ClInclude Include="Inhibitor.h" />
     <ClInclude Include="Minion.h" />
+    <ClInclude Include="Monster.h" />
     <ClInclude Include="Nexus.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="pch.h" />

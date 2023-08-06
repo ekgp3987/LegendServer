@@ -12,6 +12,7 @@
 #include "Nexus.h"
 #include "Inhibitor.h"
 #include "Turret.h"
+#include "Monster.h"
 
 Room GRoom;
 
@@ -172,6 +173,11 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 		TurretSpawn(_sendBuffer, milliSeconds);
 
 		MinionSpawn(_sendBuffer, milliSeconds);
+
+		MonsterSpawn(_sendBuffer, milliSeconds, UnitType::SOUTH_GROMP);
+		//for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
+		//	MonsterSpawn(_sendBuffer, milliSeconds, (UnitType)i);
+		//}
 
 		thread t2(std::bind(&Room::TimeThread, this));
 
@@ -677,6 +683,25 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	}
 
 	cout << "미니언 생성 패킷을 다 보냄" << endl;
+}
+
+void Room::MonsterSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, UnitType _monsterType)
+{
+	cout << "몬스터 생성" << endl;
+	MonsterRef monsterRef = MakeShared<Monster>(_monsterType);
+
+	//ObjectInfo 설정
+	ObjectInfo& objectInfo = monsterRef->GetObjectInfo();
+	ObjectMove::MoveDir moveDir = { 0.f,0.f,0.f };
+	ObjectMove::Pos pos = { 10.f, 10.f, 10.f };
+	CC CCType = CC::CLEAR;
+	ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+	SetObjectInfo(objectInfo, monsterRef->GetObjectId(), _monsterType, Faction::BLUE, Lane::NONE, objectMove);
+
+	//패킷 생성
+	PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+	Broadcast(sendBuffer, nullptr);
 }
 
 void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, UnitType _unitType, Faction _faction, Lane _lane, ObjectMove _objectMove)

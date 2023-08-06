@@ -18,5 +18,6 @@ using NexusRef = shared_ptr<class Nexus>;
 using InhibitorRef = shared_ptr<class Inhibitor>;
 using TurretRef = shared_ptr<class Turret>;
 using MinionRef = shared_ptr<class Minion>;
+using MonsterRef = shared_ptr<class Monster>;
 
 using ObjectRef = shared_ptr<class Object>;
