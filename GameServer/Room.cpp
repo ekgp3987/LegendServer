@@ -174,10 +174,9 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 
 		MinionSpawn(_sendBuffer, milliSeconds);
 
-		MonsterSpawn(_sendBuffer, milliSeconds, UnitType::SOUTH_GROMP);
-		//for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
-		//	MonsterSpawn(_sendBuffer, milliSeconds, (UnitType)i);
-		//}
+		for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
+			MonsterSpawn(_sendBuffer, 0, (UnitType)i);
+		}
 
 		thread t2(std::bind(&Room::TimeThread, this));
 
@@ -207,6 +206,21 @@ void Room::RemoveObject(uint64 _objectID)
 	//_allPlayers.erase(_objectID);
 	_blueMinions.erase(_objectID);
 	_redMinions.erase(_objectID);
+
+	auto it = _monsters.find(_objectID);
+	if (it != _monsters.end()) {
+		cout << "정글몹이 사망함." << endl;
+		uint64 monsterID = it->first;
+		UnitType monsterType = it->second;
+		{
+			WRITE_LOCK;
+			_monsters.erase(monsterID);
+		}
+		MonsterSpawn(nullptr, 5000, monsterType);
+	}
+	else {
+		return;
+	}
 }
 
 void Room::NexusSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
@@ -220,7 +234,7 @@ void Room::NexusSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 		ObjectMove::MoveDir moveDir = { .0f,.0f,.0f };
 		ObjectMove::Pos pos = { 229.7f ,15.9f, 241.5f };
 		CC CCType = CC::CLEAR;
-		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 		SetObjectInfo(objectInfo, nexusRef->GetObjectId(), UnitType::NEXUS, Faction::BLUE, Lane::NONE, objectMove);
 
 		PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -237,7 +251,7 @@ void Room::NexusSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 		ObjectMove::MoveDir moveDir = { .0f,.0f,.0f };
 		ObjectMove::Pos pos = { 1952.174f ,15.26f, 1956.22f };
 		CC CCType = CC::CLEAR;
-		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 		SetObjectInfo(objectInfo, nexusRef->GetObjectId(), UnitType::NEXUS, Faction::RED, Lane::NONE, objectMove);
 
 		PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -284,7 +298,7 @@ void Room::InhibitorSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, inhibitorRef->GetObjectId(), UnitType::INHIBITOR, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -300,7 +314,7 @@ void Room::InhibitorSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, inhibitorRef->GetObjectId(), UnitType::INHIBITOR, Faction::RED, laneType, objectMove);
 
 
@@ -350,7 +364,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -366,7 +380,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
 
@@ -413,7 +427,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -429,7 +443,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
 
@@ -476,7 +490,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -492,7 +506,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
 
@@ -530,7 +544,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -546,7 +560,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
 
@@ -591,7 +605,7 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
 				CC CCType = CC::CLEAR;
-				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::MELEE_MINION, Faction::BLUE, laneType, objectMove);
 
 				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
@@ -608,7 +622,7 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
 				CC CCType = CC::CLEAR;
-				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::MELEE_MINION, Faction::RED, laneType, objectMove);
 
 
@@ -652,7 +666,7 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
 				CC CCType = CC::CLEAR;
-				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::BLUE, laneType, objectMove);
 
 				//패킷 생성
@@ -670,7 +684,7 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
 				CC CCType = CC::CLEAR;
-				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
+				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::RED, laneType, objectMove);
 
 
@@ -687,6 +701,7 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 void Room::MonsterSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, UnitType _monsterType)
 {
+	Sleep(milliSeconds);
 	cout << "몬스터 생성" << endl;
 	MonsterRef monsterRef = MakeShared<Monster>(_monsterType);
 
@@ -695,8 +710,13 @@ void Room::MonsterSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, UnitType
 	ObjectMove::MoveDir moveDir = { 0.f,0.f,0.f };
 	ObjectMove::Pos pos = { 10.f, 10.f, 10.f };
 	CC CCType = CC::CLEAR;
-	ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, moveDir, pos, CCType);
-	SetObjectInfo(objectInfo, monsterRef->GetObjectId(), _monsterType, Faction::BLUE, Lane::NONE, objectMove);
+	ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+	SetObjectInfo(objectInfo, monsterRef->GetObjectId(), _monsterType, Faction::NONE, Lane::NONE, objectMove);
+
+	{
+		WRITE_LOCK;
+		_monsters[monsterRef->GetObjectId()] = monsterRef->GetObjectInfo().unitType;
+	}
 
 	//패킷 생성
 	PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);

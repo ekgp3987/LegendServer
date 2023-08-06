@@ -41,6 +41,8 @@ private:
 
 	map<uint64, MinionRef> _blueMinions;
 	map<uint64, MinionRef> _redMinions;
+
+	map<uint64, UnitType>	_monsters;
 	/// <summary>
 	/// 
 	/// </summary>
