@@ -155,8 +155,6 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _success)
 {
-	thread t2(std::bind(&Room::TimeThread, this));
-
 	thread t1([this, _sendBuffer, milliSeconds, _success]() {
 		int a = 0;
 
@@ -175,10 +173,13 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 
 		MinionSpawn(_sendBuffer, milliSeconds);
 
+		thread t2(std::bind(&Room::TimeThread, this));
+
+		t2.detach();
+
 	});
 
 	t1.detach();
-	t2.detach();
 }
 
 void Room::TimeThread()
