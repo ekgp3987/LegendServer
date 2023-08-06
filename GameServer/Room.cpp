@@ -145,7 +145,7 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 	//thread t1(TimeThread);
 
-	GameStartSpawn(_sendBuffer, 3000, success);
+	GameStartSpawn(_sendBuffer, 500, success);
 
 	//t1.detach();
 		});
@@ -164,7 +164,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 			return;
 		}
 
-		Sleep(milliSeconds);		
+		Sleep(milliSeconds);
 
 		NexusSpawn(_sendBuffer, milliSeconds);
 
@@ -172,7 +172,8 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 		
 		TurretSpawn(_sendBuffer, milliSeconds);
 
-		MinionSpawn(_sendBuffer, milliSeconds);
+		Sleep(3000);
+		MinionSpawn(_sendBuffer, 1000);
 
 		for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
 			MonsterSpawn(_sendBuffer, 0, (UnitType)i);
@@ -592,7 +593,7 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 			}
 			if (j == 2) {
 				laneType == Lane::BOTTOM;
-				bluePos = { 292.0f, 12.0f, 191.0f };
+				bluePos = { 308.0f, 12.0f, 181.0f };
 				redPos = { 2013.0f,12.0f,1911.0f };
 			}
 			{
@@ -693,7 +694,7 @@ void Room::MinionSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 				Broadcast(sendBuffer, nullptr);
 			}
 		}
-		Sleep(500);
+		Sleep(1000);
 	}
 
 	cout << "미니언 생성 패킷을 다 보냄" << endl;
