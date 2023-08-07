@@ -217,7 +217,7 @@ void Room::RemoveObject(uint64 _objectID)
 			WRITE_LOCK;
 			_monsters.erase(monsterID);
 		}
-		MonsterSpawn(nullptr, 5000, monsterType);
+		MonsterSpawn(nullptr, 10000, monsterType);
 	}
 	else {
 		return;
@@ -477,7 +477,7 @@ void Room::TurretSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds)
 		}
 		if (j == 2) {
 			laneType == Lane::BOTTOM;
-			bluePos = { 511.851f, 12.f, 179.241f };
+			bluePos = { 632.851f, 12.f, 183.241f };
 			redPos = { 2009.956f, 12.0f, 1561.171f };
 			blueDir = { 0.f, -83.897f, 0.f };
 			redDir = { 0.f, -3.962f, 0.f };
