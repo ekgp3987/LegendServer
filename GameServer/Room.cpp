@@ -212,7 +212,7 @@ void Room::RemoveObject(uint64 _objectID)
 			WRITE_LOCK;
 			_monsters.erase(monsterID);
 		}
-		thread t1(std::bind(&Room::MonsterSpawn, this, nullptr, 10000, monsterType));
+		thread t1(std::bind(&Room::MonsterSpawn, this, 10000, monsterType));
 		t1.detach();
 	}
 	else {
