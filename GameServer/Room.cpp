@@ -758,17 +758,16 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				redPos = { 1882.0,12.0,2036.0 };
 			}
 			else if (j == 1) {
-				laneType == Lane::MID;
+				laneType = Lane::MID;
 				bluePos = { 300.0f, 12.0f, 300.0f };
 				redPos = { 1883.0f,12.0f,1906.0f };
 			}
 			else if (j == 2) {
-				laneType == Lane::BOTTOM;
+				laneType = Lane::BOTTOM;
 				bluePos = { 308.0f, 12.0f, 181.0f };
 				redPos = { 2013.0f,12.0f,1911.0f };
 			}
 			{
-				if (laneType == Lane::END) continue;
 
 				cout << "블루 미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
@@ -810,7 +809,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 
 	//한 라인에 총 3마리의 원거리 미니언 생성
 	for (int i = 0; i < 2; i++) {
-		//3라인당 미니언 생성 //j가 0이면 탑 1이면 미드 2명 바텀
+		//3라인당 미니언 생성 //j가 0이면 탑, 1이면 미드, 2면 바텀
 		for (int j = 0; j < 3; j++) {
 			Lane laneType = Lane::END;
 			ObjectMove::Pos bluePos = {};
@@ -821,18 +820,16 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				redPos = { 1882.0,12.0,2036.0 };
 			}
 			else if (j == 1) {
-				laneType == Lane::MID;
+				laneType = Lane::MID;
 				bluePos = { 300.0f, 12.0f, 300.0f };
 				redPos = { 1883.0f,12.0f,1906.0f };
 			}
 			else if (j == 2) {
-				laneType == Lane::BOTTOM;
+				laneType = Lane::BOTTOM;
 				bluePos = { 292.0f, 12.0f, 191.0f };
 				redPos = { 2013.0f,12.0f,1911.0f };
 			}
 			{
-				if (laneType == Lane::END) continue;
-
 				cout << "블루 미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_blueMinions[minionRef->GetObjectId()] = minionRef;
