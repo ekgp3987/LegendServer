@@ -768,6 +768,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				redPos = { 2013.0f,12.0f,1911.0f };
 			}
 			{
+				if(laneType == Lane::END) laneType = Lane::TOP;
 
 				cout << "블루 미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
@@ -830,6 +831,8 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				redPos = { 2013.0f,12.0f,1911.0f };
 			}
 			{
+				if (laneType == Lane::END) laneType = Lane::TOP;
+
 				cout << "블루 미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_blueMinions[minionRef->GetObjectId()] = minionRef;
