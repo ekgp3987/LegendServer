@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Room.h"
 #include "Player.h"
 #include "GameSession.h"
@@ -22,7 +22,7 @@ void Room::BlueEnter(PlayerRef player, GameSessionRef session)
 	WRITE_LOCK;
 		_bluePlayers[currentPlayerId] = player;
 		_allPlayers[currentPlayerId] = player;
-		//ÆĞÅ¶À» »ı¼ºÇØ¼­ µé¾î¿Ô´Ù´Â °ÍÀ» ¸ğµÎ¿¡°Ô º¸¿©Áà¾ß ÇÔ.
+		//íŒ¨í‚·ì„ ìƒì„±í•´ì„œ ë“¤ì–´ì™”ë‹¤ëŠ” ê²ƒì„ ëª¨ë‘ì—ê²Œ ë³´ì—¬ì¤˜ì•¼ í•¨.
 }
 
 void Room::RedEnter(PlayerRef player, GameSessionRef session)
@@ -31,7 +31,7 @@ void Room::RedEnter(PlayerRef player, GameSessionRef session)
 	WRITE_LOCK;
 		_redPlayers[currentPlayerId] = player;
 		_allPlayers[currentPlayerId] = player;
-		//ÆĞÅ¶À» »ı¼ºÇØ¼­ µé¾î¿Ô´Ù´Â °ÍÀ» ¸ğµÎ¿¡°Ô º¸¿©Áà¾ß ÇÔ.
+		//íŒ¨í‚·ì„ ìƒì„±í•´ì„œ ë“¤ì–´ì™”ë‹¤ëŠ” ê²ƒì„ ëª¨ë‘ì—ê²Œ ë³´ì—¬ì¤˜ì•¼ í•¨.
 }
 
 void Room::Leave(PlayerRef player, GameSessionRef session)
@@ -46,7 +46,7 @@ void Room::Leave(PlayerRef player, GameSessionRef session)
 
 
 
-		//TO DO : ÆĞÅ¶À» »ı¼ºÇØ¼­ ³ª°¬´Ù´Â °ÍÀ» ¸ğµÎ¿¡°Ô º¸¿©Áà¾ß ÇÔ.
+		//TO DO : íŒ¨í‚·ì„ ìƒì„±í•´ì„œ ë‚˜ê°”ë‹¤ëŠ” ê²ƒì„ ëª¨ë‘ì—ê²Œ ë³´ì—¬ì¤˜ì•¼ í•¨.
 }
 
 void Room::Broadcast(SendBufferRef sendBuffer, GameSessionRef session)
@@ -86,7 +86,7 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 		int64 playerNum = GRoom.GetPlayerSize();
 	map<uint64, PlayerRef> players = GRoom.GetPlayers();
 
-	//Ã¨ÇÇ¾ğÀ» ÇÈ ¾ÈÇÑ »ç¶÷ÀÌ ÀÖÀ¸¸é °ÔÀÓ ½ÃÀÛ ¾ÈÇÔ.
+	//ì±”í”¼ì–¸ì„ í”½ ì•ˆí•œ ì‚¬ëŒì´ ìˆìœ¼ë©´ ê²Œì„ ì‹œì‘ ì•ˆí•¨.
 	for (auto& p : players) {
 		if (p.second->GetChampionType() == 0)
 			success = false;
@@ -97,14 +97,14 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 	PKT_S_GAME_START_WRITE::PlayerInfoList playerInfoList = pktWriter.ReservePlayerInfoList(playerNum);
 
 
-	//ÇÃ·¹ÀÌ¾îµéÀÇ ÃÊ±â À§Ä¡°ª ¼³Á¤
+	//í”Œë ˆì´ì–´ë“¤ì˜ ì´ˆê¸° ìœ„ì¹˜ê°’ ì„¤ì •
 	vector<ObjectMove> playerMove;
 	{
 		ObjectMove mPlayerMove;
 		mPlayerMove.moveDir = ObjectMove::MoveDir{0.f,  -3.14 / 2, 0.f };
 		mPlayerMove.pos = ObjectMove::Pos{0.0f, 0.0f, 0.0f };
 
-		// Blue, Red, Blue Red ¼øÀ¸·Î ³ªÁß¿¡ ÁÂÇ¥ ¹Ù²ã¾ß ÇÑ´Ù. (ÇöÀç´Â blue ¿¡ ´Ù »ı±è)
+		// Blue, Red, Blue Red ìˆœìœ¼ë¡œ ë‚˜ì¤‘ì— ì¢Œí‘œ ë°”ê¿”ì•¼ í•œë‹¤. (í˜„ì¬ëŠ” blue ì— ë‹¤ ìƒê¹€)
 		mPlayerMove.pos = ObjectMove::Pos{ 53.0f,30.0f,27.0f };
 		playerMove.push_back(mPlayerMove);
 
@@ -119,17 +119,17 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 	}
 
-	//ÇÃ·¹ÀÌ¾î Á¤º¸¸¦ ÆĞÅ¶¿¡ ³ÖÀ½
+	//í”Œë ˆì´ì–´ ì •ë³´ë¥¼ íŒ¨í‚·ì— ë„£ìŒ
 	int i = 0;
 	for (auto& p : players) {
-		cout << "Player " << to_string(p.second->GetObjectId()) << "ÀÇ Á¤º¸ÀÔ´Ï´Ù." << endl;
+		cout << "Player " << to_string(p.second->GetObjectId()) << "ì˜ ì •ë³´ì…ë‹ˆë‹¤." << endl;
 		playerInfoList[i].champion = p.second->GetChampionType();
 		playerInfoList[i].faction = p.second->GetFaction();
 		playerInfoList[i].id = p.second->GetObjectId();
 		playerInfoList[i].posInfo = playerMove[i];
 		playerInfoList[i].host = p.second->GetHost();
 
-		//ÇÃ·¹ÀÌ¾î ¹®ÀÚ¿­À» ¾È¿¡ ³ÖÀ½
+		//í”Œë ˆì´ì–´ ë¬¸ìì—´ì„ ì•ˆì— ë„£ìŒ
 		int64 nickNameSize = p.second->GetName().size();
 		wstring nickName = p.second->GetName();
 		PKT_S_GAME_START_WRITE::NickNameList nick = pktWriter.ReserveNickNameList(&playerInfoList[i], nickNameSize);
@@ -157,7 +157,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 		int a = 0;
 
 		if (_success == false) {
-			cout << "GameStart½ÇÆĞÇØ¼­ SpawnÆĞÅ¶ ½ÇÇàÇÏÁö ¾ÊÀ½";
+			cout << "GameStartì‹¤íŒ¨í•´ì„œ SpawníŒ¨í‚· ì‹¤í–‰í•˜ì§€ ì•ŠìŒ";
 			return;
 		}
 
@@ -192,7 +192,7 @@ void Room::TimeThread()
 {
 	for (int seconds = 0; seconds <= 3600; seconds++) {
 		second = seconds;
-		cout << "°ÔÀÓ ½ÃÀÛ ÈÄ " << seconds << "ÃÊ°¡ Áö³µ½À´Ï´Ù." << endl;
+		cout << "ê²Œì„ ì‹œì‘ í›„ " << seconds << "ì´ˆê°€ ì§€ë‚¬ìŠµë‹ˆë‹¤." << endl;
 		if (GetPlayerSize() == 0)
 			return;
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -207,7 +207,7 @@ void Room::RemoveObject(uint64 _objectID)
 	//_allPlayers.erase(_objectID);
 	auto it1 = _monsters.find(_objectID);
 	if (it1 != _monsters.end()) {
-		cout << "Á¤±Û¸÷ÀÌ »ç¸ÁÇÔ." << endl;
+		cout << "ì •ê¸€ëª¹ì´ ì‚¬ë§í•¨." << endl;
 		uint64 monsterID = it1->first;
 		UnitType monsterType = it1->second;
 		{
@@ -226,7 +226,7 @@ void Room::RemoveObject(uint64 _objectID)
 
 	auto it2 = _blueInhibitors.find(_objectID);
 	if (it2 != _blueInhibitors.end()) {
-		cout << "ºí·çÆÀ ¾ïÁ¦±â°¡ ÆÄ±«µÊ" << endl;
+		cout << "ë¸”ë£¨íŒ€ ì–µì œê¸°ê°€ íŒŒê´´ë¨" << endl;
 		uint64 inhibitorID = it2->first;
 		InhibitorRef inhibitorRef = it2->second;
 		_brokenInhibitors[inhibitorID] = inhibitorRef;
@@ -240,7 +240,7 @@ void Room::RemoveObject(uint64 _objectID)
 
 	auto it3 = _redInhibitors.find(_objectID);
 	if (it3 != _redInhibitors.end()) {
-		cout << "·¹µåÆÀ ¾ïÁ¦±â°¡ ÆÄ±«µÊ" << endl;
+		cout << "ë ˆë“œíŒ€ ì–µì œê¸°ê°€ íŒŒê´´ë¨" << endl;
 		uint64 inhibitorID = it3->first;
 		InhibitorRef inhibitorRef = it3->second;
 		_brokenInhibitors[inhibitorID] = inhibitorRef;
@@ -256,10 +256,10 @@ void Room::RemoveObject(uint64 _objectID)
 void Room::NexusSpawn( uint64 milliSeconds)
 {
 	{
-		cout << "ºí·ç ³Ø¼­½º »ı¼º" << endl;
+		cout << "ë¸”ë£¨ ë„¥ì„œìŠ¤ ìƒì„±" << endl;
 		NexusRef nexusRef = MakeShared<Nexus>();
 
-		//ObjectInfo ¼³Á¤
+		//ObjectInfo ì„¤ì •
 		ObjectInfo& objectInfo = nexusRef->GetObjectInfo();
 		ObjectMove::MoveDir moveDir = { .0f,.0f,.0f };
 		ObjectMove::Pos pos = { 229.7f ,15.9f, 241.5f };
@@ -273,10 +273,10 @@ void Room::NexusSpawn( uint64 milliSeconds)
 	}
 
 	{
-		cout << "·¹µå ³Ø¼­½º »ı¼º" << endl;
+		cout << "ë ˆë“œ ë„¥ì„œìŠ¤ ìƒì„±" << endl;
 		NexusRef nexusRef = MakeShared<Nexus>();
 
-		//ObjectInfo ¼³Á¤
+		//ObjectInfo ì„¤ì •
 		ObjectInfo& objectInfo = nexusRef->GetObjectInfo();
 		ObjectMove::MoveDir moveDir = { .0f,.0f,.0f };
 		ObjectMove::Pos pos = { 1952.174f ,15.26f, 1956.22f };
@@ -320,11 +320,11 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 			redDir = { 0.f,90.f,0.f };
 		}
 		{
-			cout << "ºí·ç ¾ïÁ¦±â »ı¼º" << endl;
+			cout << "ë¸”ë£¨ ì–µì œê¸° ìƒì„±" << endl;
 			InhibitorRef inhibitorRef = MakeShared<Inhibitor>();
 			_blueInhibitors[inhibitorRef->GetObjectId()] = inhibitorRef;
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = inhibitorRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
@@ -337,11 +337,11 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 			Broadcast(sendBuffer, nullptr);
 		}
 		{
-			cout << "·¹µå ¾ïÁ¦±â »ı¼º" << endl;
+			cout << "ë ˆë“œ ì–µì œê¸° ìƒì„±" << endl;
 			InhibitorRef inhibitorRef = MakeShared<Inhibitor>();
 			_redInhibitors[inhibitorRef->GetObjectId()] = inhibitorRef;
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = inhibitorRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
@@ -359,7 +359,7 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 
 void Room::TurretSpawn( uint64 milliSeconds)
 {
-	//1Â÷Å¸¿ö »ı¼º
+	//1ì°¨íƒ€ì›Œ ìƒì„±
 	for (int j = 0; j < 3; j++) {
 		Lane laneType = Lane::END;
 		ObjectMove::Pos bluePos = {};
@@ -388,10 +388,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			redDir = { 0.f, -3.962f, 0.f };
 		}
 		{
-			cout << "1Â÷ ºí·ç Å¸¿ö »ı¼º" << endl;
+			cout << "1ì°¨ ë¸”ë£¨ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
@@ -404,10 +404,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			Broadcast(sendBuffer, nullptr);
 		}
 		{
-			cout << "1Â÷ ·¹µå Å¸¿ö »ı¼º" << endl;
+			cout << "1ì°¨ ë ˆë“œ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
@@ -422,7 +422,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		}
 	}
 
-	//2Â÷Å¸¿ö »ı¼º
+	//2ì°¨íƒ€ì›Œ ìƒì„±
 	for (int j = 0; j < 3; j++) {
 		Lane laneType = Lane::END;
 		ObjectMove::Pos bluePos = {};
@@ -451,10 +451,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			redDir = { 0.f, -3.962f, 0.f };
 		}
 		{
-			cout << "2Â÷ ºí·ç Å¸¿ö »ı¼º" << endl;
+			cout << "2ì°¨ ë¸”ë£¨ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
@@ -467,10 +467,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			Broadcast(sendBuffer, nullptr);
 		}
 		{
-			cout << "2Â÷ ·¹µå Å¸¿ö »ı¼º" << endl;
+			cout << "2ì°¨ ë ˆë“œ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
@@ -485,7 +485,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		}
 	}
 
-	//3Â÷Å¸¿ö »ı¼º
+	//3ì°¨íƒ€ì›Œ ìƒì„±
 	for (int j = 0; j < 3; j++) {
 		Lane laneType = Lane::END;
 		ObjectMove::Pos bluePos = {};
@@ -514,10 +514,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			redDir = { 0.f, -3.962f, 0.f };
 		}
 		{
-			cout << "3Â÷ ºí·ç Å¸¿ö »ı¼º" << endl;
+			cout << "3ì°¨ ë¸”ë£¨ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
@@ -530,10 +530,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			Broadcast(sendBuffer, nullptr);
 		}
 		{
-			cout << "3Â÷ ·¹µå Å¸¿ö »ı¼º" << endl;
+			cout << "3ì°¨ ë ˆë“œ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
@@ -548,7 +548,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		}
 	}
 
-	//½ÖµÕÀÌ
+	//ìŒë‘¥ì´
 	for (int j = 0; j < 2; j++) {
 		Lane laneType = Lane::NONE;
 		ObjectMove::Pos bluePos = {};
@@ -568,10 +568,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			redDir = { 0.f, 40.125f, 0.f };
 		}
 		{
-			cout << "ºí·ç ½ÖµÕÀÌ Å¸¿ö »ı¼º" << endl;
+			cout << "ë¸”ë£¨ ìŒë‘¥ì´ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
@@ -584,10 +584,10 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			Broadcast(sendBuffer, nullptr);
 		}
 		{
-			cout << "·¹µå ½ÖµÕÀÌ Å¸¿ö »ı¼º" << endl;
+			cout << "ë ˆë“œ ìŒë‘¥ì´ íƒ€ì›Œ ìƒì„±" << endl;
 			TurretRef turretRef = MakeShared<Turret>();
 
-			//ObjectInfo ¼³Á¤
+			//ObjectInfo ì„¤ì •
 			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
@@ -607,7 +607,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 {
 	Sleep(_spawnTime);
 
-	//½´ÆÛ¹Ì´Ï¾ğ »ı¼º ¹æº¹¹®
+	//ìŠˆí¼ë¯¸ë‹ˆì–¸ ìƒì„± ë°©ë³µë¬¸
 	for (auto it = _brokenInhibitors.begin(); it != _brokenInhibitors.end(); it++) {
 		Faction inhibitorFaction = it->second->GetFaction();
 		Lane inhibitorLane = it->second->GetObjectInfo().lane;
@@ -619,11 +619,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			if (inhibitorLane == Lane::TOP) {
 				bluePos = { 165.0f, 12.0f, 309.0f };
 
-				cout << "ºí·ç ½´ÆÛ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë¸”ë£¨ ìŠˆí¼ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
@@ -638,11 +638,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			else if (inhibitorLane == Lane::MID) {
 				bluePos = { 300.0f, 12.0f, 300.0f };
 
-				cout << "ºí·ç ½´ÆÛ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë¸”ë£¨ ìŠˆí¼ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
@@ -657,11 +657,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			else if (inhibitorLane == Lane::BOTTOM) {
 				bluePos = { 308.0f, 12.0f, 181.0f };
 
-				cout << "ºí·ç ½´ÆÛ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë¸”ë£¨ ìŠˆí¼ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
@@ -674,18 +674,18 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				Broadcast(sendBuffer, nullptr);
 			}
 			else {
-				cout << "ERROR : ¾ïÁ¦±âÀÇ ¶óÀÎÀÌ ÁöÁ¤ÀÌ ¾ÈµÇ¾î ÀÖ½À´Ï´Ù." << endl;
+				cout << "ERROR : ì–µì œê¸°ì˜ ë¼ì¸ì´ ì§€ì •ì´ ì•ˆë˜ì–´ ìˆìŠµë‹ˆë‹¤." << endl;
 			}
 		}
 		else if (inhibitorFaction == Faction::BLUE) {
 			if (inhibitorLane == Lane::TOP) {
 				redPos = { 1882.0,12.0,2036.0 };
 
-				cout << "·¹µå ½´ÆÛ ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë ˆë“œ ìŠˆí¼ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
@@ -701,11 +701,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			else if (inhibitorLane == Lane::MID) {
 				redPos = { 1883.0f,12.0f,1906.0f };
 
-				cout << "·¹µå ½´ÆÛ ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë ˆë“œ ìŠˆí¼ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
@@ -721,11 +721,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			else if (inhibitorLane == Lane::BOTTOM) {
 				redPos = { 2013.0f,12.0f,1911.0f };
 
-				cout << "·¹µå ½´ÆÛ ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë ˆë“œ ìŠˆí¼ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
@@ -739,17 +739,17 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				Broadcast(sendBuffer, nullptr);
 			}
 			else {
-				cout << "ERROR : ¾ïÁ¦±âÀÇ ¶óÀÎÀÌ ÁöÁ¤ÀÌ ¾ÈµÇ¾î ÀÖ½À´Ï´Ù." << endl;
+				cout << "ERROR : ì–µì œê¸°ì˜ ë¼ì¸ì´ ì§€ì •ì´ ì•ˆë˜ì–´ ìˆìŠµë‹ˆë‹¤." << endl;
 			}
 		}
 		else {
-			cout << "ERROR : ¾ïÁ¦±âÀÇ FactionÀÌ ÁöÁ¤ÀÌ ¾ÈµÇ¾î ÀÖ½À´Ï´Ù." << endl;
+			cout << "ERROR : ì–µì œê¸°ì˜ Factionì´ ì§€ì •ì´ ì•ˆë˜ì–´ ìˆìŠµë‹ˆë‹¤." << endl;
 		}
 	}
 
-	//ÇÑ ¶óÀÎ¿¡ ÃÑ 3¸¶¸®ÀÇ ±ÙÁ¢ ¹Ì´Ï¾ğ »ı¼º
+	//í•œ ë¼ì¸ì— ì´ 3ë§ˆë¦¬ì˜ ê·¼ì ‘ ë¯¸ë‹ˆì–¸ ìƒì„±
 	for (int i = 0; i < 1; i++) {
-		//3¶óÀÎ´ç ¹Ì´Ï¾ğ »ı¼º
+		//3ë¼ì¸ë‹¹ ë¯¸ë‹ˆì–¸ ìƒì„±
 		for (int j = 0; j < 3; j++) {
 			Lane laneType = Lane::END;
 			ObjectMove::Pos bluePos = {};
@@ -772,11 +772,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			{
 				if(laneType == Lane::END) laneType = Lane::TOP;
 
-				cout << "ºí·ç ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë¸”ë£¨ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_blueMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
@@ -789,11 +789,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				Broadcast(sendBuffer, nullptr);
 			}
 			{
-				cout << "·¹µå ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë ˆë“œ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
@@ -810,9 +810,69 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 		Sleep(1000);
 	}
 
-	//ÇÑ ¶óÀÎ¿¡ ÃÑ 3¸¶¸®ÀÇ ¿ø°Å¸® ¹Ì´Ï¾ğ »ı¼º
+	//ëŒ€í¬ë¯¸ë‹ˆì–¸ ìƒì„±
+	for (int j = 0; j < 3; j++) {
+		Lane laneType = Lane::END;
+		ObjectMove::Pos bluePos = {};
+		ObjectMove::Pos redPos = {};
+		if (j == 0) {
+			laneType = Lane::TOP;
+			bluePos = { 165.0f, 12.0f, 309.0f };
+			redPos = { 1882.0,12.0,2036.0 };
+		}
+		else if (j == 1) {
+			laneType = Lane::MID;
+			bluePos = { 300.0f, 12.0f, 300.0f };
+			redPos = { 1883.0f,12.0f,1906.0f };
+		}
+		else if (j == 2) {
+			laneType = Lane::BOTTOM;
+			bluePos = { 308.0f, 12.0f, 181.0f };
+			redPos = { 2013.0f,12.0f,1911.0f };
+		}
+		{
+			if (laneType == Lane::END) laneType = Lane::TOP;
+
+			cout << "ë¸”ë£¨ ëŒ€í¬ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
+			MinionRef minionRef = MakeShared<Minion>();
+			_blueMinions[minionRef->GetObjectId()] = minionRef;
+
+			//ObjectInfo ì„¤ì •
+			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+			ObjectMove::Pos pos = bluePos;
+			CC CCType = CC::CLEAR;
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::BLUE, laneType, objectMove);
+
+			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+			Broadcast(sendBuffer, nullptr);
+		}
+		{
+			cout << "ë ˆë“œ ëŒ€í¬ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
+			MinionRef minionRef = MakeShared<Minion>();
+			_redMinions[minionRef->GetObjectId()] = minionRef;
+
+			//ObjectInfo ì„¤ì •
+			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+			ObjectMove::Pos pos = redPos;
+			CC CCType = CC::CLEAR;
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::RED, laneType, objectMove);
+
+
+			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+			Broadcast(sendBuffer, nullptr);
+		}
+	}
+	Sleep(1000);
+
+	//í•œ ë¼ì¸ì— ì´ 3ë§ˆë¦¬ì˜ ì›ê±°ë¦¬ ë¯¸ë‹ˆì–¸ ìƒì„±
 	for (int i = 0; i < 2; i++) {
-		//3¶óÀÎ´ç ¹Ì´Ï¾ğ »ı¼º //j°¡ 0ÀÌ¸é Å¾, 1ÀÌ¸é ¹Ìµå, 2¸é ¹ÙÅÒ
+		//3ë¼ì¸ë‹¹ ë¯¸ë‹ˆì–¸ ìƒì„± //jê°€ 0ì´ë©´ íƒ‘, 1ì´ë©´ ë¯¸ë“œ, 2ë©´ ë°”í…€
 		for (int j = 0; j < 3; j++) {
 			Lane laneType = Lane::END;
 			ObjectMove::Pos bluePos = {};
@@ -835,11 +895,11 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			{
 				if (laneType == Lane::END) laneType = Lane::TOP;
 
-				cout << "ºí·ç ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë¸”ë£¨ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_blueMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
@@ -847,17 +907,17 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::BLUE, laneType, objectMove);
 
-				//ÆĞÅ¶ »ı¼º
+				//íŒ¨í‚· ìƒì„±
 				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 				Broadcast(sendBuffer, nullptr);
 			}
 			{
-				cout << "·¹µå ¹Ì´Ï¾ğ »ı¼º" << endl;
+				cout << "ë ˆë“œ ë¯¸ë‹ˆì–¸ ìƒì„±" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
 				_redMinions[minionRef->GetObjectId()] = minionRef;
 
-				//ObjectInfo ¼³Á¤
+				//ObjectInfo ì„¤ì •
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
@@ -874,10 +934,10 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 		Sleep(1000);
 	}
 
-	cout << "¹Ì´Ï¾ğ »ı¼º ÆĞÅ¶À» ´Ù º¸³¿" << endl;
+	cout << "ë¯¸ë‹ˆì–¸ ìƒì„± íŒ¨í‚·ì„ ë‹¤ ë³´ëƒ„" << endl;
 
-	////30000À» ¹Ù²Ù¸é ¸®½ºÆù ½Ã°£ÀÌ º¯°æµË´Ï´Ù.
-	// »ç¿ë½Ã ÁÖ¼®À» ÇØÁ¦ÇØÁÖ¼¼¿ä.
+	////30000ì„ ë°”ê¾¸ë©´ ë¦¬ìŠ¤í° ì‹œê°„ì´ ë³€ê²½ë©ë‹ˆë‹¤.
+	// ì‚¬ìš©ì‹œ ì£¼ì„ì„ í•´ì œí•´ì£¼ì„¸ìš”.
 	//thread t3(std::bind(&Room::MinionSpawn, this, 1000, 30000));
 	//t3.detach();
 }
@@ -885,10 +945,10 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 void Room::MonsterSpawn( uint64 milliSeconds, UnitType _monsterType)
 {
 	Sleep(milliSeconds);
-	cout << "¸ó½ºÅÍ »ı¼º" << endl;
+	cout << "ëª¬ìŠ¤í„° ìƒì„±" << endl;
 	MonsterRef monsterRef = MakeShared<Monster>(_monsterType);
 
-	//ObjectInfo ¼³Á¤
+	//ObjectInfo ì„¤ì •
 	ObjectInfo& objectInfo = monsterRef->GetObjectInfo();
 	ObjectMove::MoveDir moveDir = { 0.f,0.f,0.f };
 	ObjectMove::Pos pos = { 10.f, 10.f, 10.f };
@@ -901,7 +961,7 @@ void Room::MonsterSpawn( uint64 milliSeconds, UnitType _monsterType)
 		_monsters[monsterRef->GetObjectId()] = monsterRef->GetObjectInfo().unitType;
 	}
 
-	//ÆĞÅ¶ »ı¼º
+	//íŒ¨í‚· ìƒì„±
 	PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 	Broadcast(sendBuffer, nullptr);
