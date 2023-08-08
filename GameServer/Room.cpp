@@ -397,11 +397,13 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
-			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-			Broadcast(sendBuffer, nullptr);
+			for (int i = 0; i < 4; i++) {
+				SetObjectInfo(objectInfo, turretRef->GetObjectId() + i, UnitType::TURRET, Faction::BLUE, laneType, objectMove);
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+				Broadcast(sendBuffer, nullptr);
+			}
 		}
 		{
 			cout << "1차 레드 타워 생성" << endl;
@@ -413,12 +415,13 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
-
-			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-			Broadcast(sendBuffer, nullptr);
+			for (int i = 0; i < 4; i++) {
+				SetObjectInfo(objectInfo, turretRef->GetObjectId()+i, UnitType::TURRET, Faction::RED, laneType, objectMove);
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+				Broadcast(sendBuffer, nullptr);
+			}
 		}
 	}
 
