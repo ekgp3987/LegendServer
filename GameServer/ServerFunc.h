@@ -354,6 +354,7 @@ struct KDACSInfo
 
 struct MtrlInfoPacket
 {
+    UINT64 targetId;
     int iMtrlIndex;
     TEX_PARAM  tex_param;
     
