@@ -143,7 +143,8 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 
 	Broadcast(sendBuffer, nullptr);
 
-	GameStartSpawn(_sendBuffer, 500, success);
+	thread t1(std::bind(&Room::GameStartSpawn, this, _sendBuffer, 500, success));
+	t1.detach();
 		});
 
 	t.detach();
@@ -169,6 +170,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 		TurretSpawn(milliSeconds);
 
 		Sleep(3000);
+
 		MinionSpawn(1000, 0);
 
 		
