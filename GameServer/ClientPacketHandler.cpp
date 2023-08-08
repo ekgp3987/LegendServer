@@ -56,6 +56,9 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	case C_SOUND:
 		Handle_C_SOUND(session, buffer, len);
 		break;
+	case C_OBJECT_MTRL:
+		Handle_C_OBJECT_MTRL(session, buffer, len);
+		break;
 	default:
 		break;
 	}
@@ -385,13 +388,13 @@ void ClientPacketHandler::Handle_C_DESPAWN_OBJECT(PacketSessionRef& session, BYT
 		return;
 	}
 
-	GRoom.RemoveObject(pkt->objId);
-
 	PKT_S_DESPAWN_OBJECT_WRITE pktWriter(pkt->objId, pkt->time);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	GRoom.Broadcast(sendBuffer, nullptr);
+
+	GRoom.RemoveObject(pkt->objId);
 }
 
 void ClientPacketHandler::Handle_C_KDA_CS(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -458,6 +461,44 @@ void ClientPacketHandler::Handle_C_SOUND(PacketSessionRef& session, BYTE* buffer
 	PKT_S_SOUND_WRITE::SoundNameList soundName = pktWriter.ReserveAnimNameList(resultSoundName.size());
 	for (int i = 0; i < resultSoundName.size(); i++) {
 		soundName[i] = { resultSoundName[i] };
+	}
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "Handle_C_OBJECT_MTRL에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	BufferReader br(buffer, len);
+
+	PKT_C_OBJECT_MTRL* pkt = reinterpret_cast<PKT_C_OBJECT_MTRL*>(buffer);
+
+
+	if (pkt->Validate() == false)
+	{
+		cout << "Handle_C_OBJECT_MTRL Validate 실패" << endl;
+		return;
+	}
+
+	MtrlInfoPacket mtrlInfo = pkt->mtrlInfo;
+
+	PKT_C_OBJECT_MTRL::MtrlNameList mtrlNames = pkt->GetMtrlNameList();
+
+	wstring resultMtrlName = L"";
+	for (auto& mtrlName : mtrlNames) {
+		resultMtrlName.push_back(mtrlName.mtrlName);
+	}
+
+	PKT_S_OBJECT_MTRL_WRITE pktWriter(mtrlInfo);
+
+	PKT_S_OBJECT_MTRL_WRITE::MtrlNameList mtrlName = pktWriter.ReserveMtrlNameList(resultMtrlName.size());
+	for (int i = 0; i < resultMtrlName.size(); i++) {
+		mtrlName[i] = { resultMtrlName[i] };
 	}
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
