@@ -44,9 +44,6 @@ enum
 
 	C_TIME = 25,
 	S_TIME = 26,
-
-	C_OBJECT_MTRL = 27,
-	S_OBJECT_MTRL = 28,
 };
 
 class ClientPacketHandler
@@ -64,7 +61,6 @@ public:
 	static void Handle_C_DESPAWN_OBJECT(PacketSessionRef& session, BYTE* buffer, int32 len);
 	static void Handle_C_KDA_CS(PacketSessionRef& session, BYTE* buffer, int32 len);
 	static void Handle_C_SOUND(PacketSessionRef& session, BYTE* buffer, int32 len);
-	static void Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* buffer, int32 len);
 
 private:
 	USE_LOCK;
@@ -862,72 +858,6 @@ struct PKT_S_TIME {
 };
 #pragma pack()
 
-#pragma pack(1)
-struct PKT_C_OBJECT_MTRL {
-	uint16		packetSize;
-	uint16		packetId;
-	MtrlInfoPacket mtrlInfo;
-
-	bool Validate() {
-		{
-			uint32 size = 0;
-			size += sizeof(PKT_C_OBJECT_MTRL);
-			if (packetSize < size)
-				return false;
-
-			if (mtrlInfo.Validate((BYTE*)this, packetSize, OUT size) == false)
-				return false;
-
-			if (size != packetSize)
-				return false;
-
-			return true;
-		}
-	}
-
-	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
-
-	MtrlNameList GetMtrlNameList() {
-		BYTE* data = reinterpret_cast<BYTE*>(this);
-		data += mtrlInfo.mtrlNameOffset;
-		return MtrlNameList(reinterpret_cast<MtrlInfoPacket::mtrlNameItem*>(data), mtrlInfo.mtrlNameCount);
-	}
-};
-#pragma pack()
-
-#pragma pack(1)
-struct PKT_S_OBJECT_MTRL {
-	uint16		packetSize;
-	uint16		packetId;
-	MtrlInfoPacket mtrlInfo;
-
-	bool Validate() {
-		{
-			uint32 size = 0;
-			size += sizeof(PKT_S_OBJECT_MTRL);
-			if (packetSize < size)
-				return false;
-
-			if (mtrlInfo.Validate((BYTE*)this, packetSize, OUT size) == false)
-				return false;
-
-			if (size != packetSize)
-				return false;
-
-			return true;
-		}
-	}
-
-	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
-
-	MtrlNameList GetMtrlNameList() {
-		BYTE* data = reinterpret_cast<BYTE*>(this);
-		data += mtrlInfo.mtrlNameOffset;
-		return MtrlNameList(reinterpret_cast<MtrlInfoPacket::mtrlNameItem*>(data), mtrlInfo.mtrlNameCount);
-	}
-};
-#pragma pack()
-
 //===============================
 // 이 밑은 패킷 Write 클래스 모음입니다. |
 // ==============================
@@ -1569,87 +1499,7 @@ private:
 };
 #pragma pack()
 
-#pragma pack(1)
-class PKT_C_OBJECT_MTRL_WRITE {
-public:
-	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
-	using MtrlNameItem = MtrlInfoPacket::mtrlNameItem;
 
-	PKT_C_OBJECT_MTRL_WRITE(MtrlInfoPacket  _mtrlInfo)
-	{
-		_sendBuffer = GSendBufferManager->Open(4096);
-		// 초기화
-		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
-
-		_pkt = _bw.Reserve<PKT_C_OBJECT_MTRL>();
-		_pkt->packetSize = 0; // To Fill
-		_pkt->packetId = C_OBJECT_MTRL;
-		_pkt->mtrlInfo = _mtrlInfo;
-	}
-
-	MtrlNameList ReserveMtrlNameList(uint16 _mtrlNameCount) {
-		MtrlNameItem* firstBuffsListItem = _bw.Reserve<MtrlNameItem>(_mtrlNameCount);
-		_pkt->mtrlInfo.mtrlNameOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
-		_pkt->mtrlInfo.mtrlNameCount = _mtrlNameCount;
-		return MtrlNameList(firstBuffsListItem, _mtrlNameCount);
-	}
-
-	SendBufferRef CloseAndReturn()
-	{
-		// 패킷 사이즈 계산
-		_pkt->packetSize = _bw.WriteSize();
-
-		_sendBuffer->Close(_bw.WriteSize());
-		return _sendBuffer;
-	}
-
-private:
-	PKT_C_OBJECT_MTRL* _pkt = nullptr;
-	SendBufferRef _sendBuffer;
-	BufferWriter _bw;
-};
-#pragma pack()
-
-#pragma pack(1)
-class PKT_S_OBJECT_MTRL_WRITE {
-public:
-	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
-	using MtrlNameItem = MtrlInfoPacket::mtrlNameItem;
-
-	PKT_S_OBJECT_MTRL_WRITE(MtrlInfoPacket  _mtrlInfo)
-	{
-		_sendBuffer = GSendBufferManager->Open(4096);
-		// 초기화
-		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
-
-		_pkt = _bw.Reserve<PKT_S_OBJECT_MTRL>();
-		_pkt->packetSize = 0; // To Fill
-		_pkt->packetId = S_OBJECT_MTRL;
-		_pkt->mtrlInfo = _mtrlInfo;
-	}
-
-	MtrlNameList ReserveMtrlNameList(uint16 _mtrlNameCount) {
-		MtrlNameItem* firstBuffsListItem = _bw.Reserve<MtrlNameItem>(_mtrlNameCount);
-		_pkt->mtrlInfo.mtrlNameOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
-		_pkt->mtrlInfo.mtrlNameCount = _mtrlNameCount;
-		return MtrlNameList(firstBuffsListItem, _mtrlNameCount);
-	}
-
-	SendBufferRef CloseAndReturn()
-	{
-		// 패킷 사이즈 계산
-		_pkt->packetSize = _bw.WriteSize();
-
-		_sendBuffer->Close(_bw.WriteSize());
-		return _sendBuffer;
-	}
-
-private:
-	PKT_S_OBJECT_MTRL* _pkt = nullptr;
-	SendBufferRef _sendBuffer;
-	BufferWriter _bw;
-};
-#pragma pack()
 
 
 

@@ -139,25 +139,6 @@ enum class CC
     AIRBORNE = 1 << 4,
 };
 
-enum TEX_PARAM
-{
-    TEX_0,
-    TEX_1,
-    TEX_2,
-    TEX_3,
-    TEX_4,
-    TEX_5,
-    TEX_6,
-    TEX_7,
-
-    TEX_CUBE_0,
-    TEX_CUBE_1,
-
-    TEX_ARR_0,
-    TEX_ARR_1,
-
-    TEX_END,
-};
 
 struct ObjectMove
 {
@@ -350,27 +331,6 @@ struct KDACSInfo
     UINT64      killerId;
     UINT64      victimId;
     UnitType   deadObjUnitType;
-};
-
-struct MtrlInfoPacket
-{
-    int iMtrlIndex;
-    TEX_PARAM  tex_param;
-    
-    uint16 mtrlNameOffset;
-    uint16 mtrlNameCount;
-
-    struct mtrlNameItem {//¿¹½Ã L"texture\\FBXTexture\\alphaTex.png"
-        wchar_t mtrlName;
-    };
-    
-    bool Validate(BYTE* packetStart, uint16 packetSize, OUT uint32& size) {
-        if (mtrlNameOffset + mtrlNameCount * sizeof(mtrlNameItem) > packetSize)
-            return false;
-
-        size += mtrlNameCount * sizeof(mtrlNameItem);
-        return true;
-    }
 };
 
 extern PlayerInfo MyPlayer;
