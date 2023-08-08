@@ -372,14 +372,14 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			redDir = { 0.f, 90.f, 0.f };
 		}
 		if (j == 1) {
-			laneType == Lane::MID;
+			laneType = Lane::MID;
 			bluePos = { 861.113f, 12.f, 941.186f };
 			redPos = { 1328.513f, 12.0f, 1250.263f };
 			blueDir = { 180.f, -47.597f, -180.f };
 			redDir = { 0.f, 46.978f, 0.f };
 		}
 		if (j == 2) {
-			laneType == Lane::BOTTOM;
+			laneType = Lane::BOTTOM;
 			bluePos = { 1546.112f, 12.f, 151.179f };
 			redPos = { 2045.903f, 12.0f, 655.733f };
 			blueDir = { 174.047f, 87.112f, 172.7f };
@@ -435,14 +435,14 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			redDir = { 0.f, 90.f, 0.f };
 		}
 		if (j == 1) {
-			laneType == Lane::MID;
+			laneType = Lane::MID;
 			bluePos = { 743.113f, 12.f, 703.186f };
 			redPos = { 1439.891f, 12.0f, 1487.584f };
 			blueDir = { 180.f, -47.597f, -180.f };
 			redDir = { 0.f, 46.978f, 0.f };
 		}
 		if (j == 2) {
-			laneType == Lane::BOTTOM;
+			laneType = Lane::BOTTOM;
 			bluePos = { 1017.112f, 12.f, 221.179f };
 			redPos = { 1965.386f, 12.0f, 1206.867f };
 			blueDir = { 0.f, -83.897f, 0.f };
@@ -498,14 +498,14 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			redDir = { 0.f, 90.f, 0.f };
 		}
 		if (j == 1) {
-			laneType == Lane::MID;
+			laneType = Lane::MID;
 			bluePos = { 545.113f, 12.f, 549.186f };
 			redPos = { 1643.650f, 12.0f, 1654.128f };
 			blueDir = { 180.f, -47.597f, -180.f };
 			redDir = { 0.f, 46.978f, 0.f };
 		}
 		if (j == 2) {
-			laneType == Lane::BOTTOM;
+			laneType = Lane::BOTTOM;
 			bluePos = { 632.851f, 12.f, 183.241f };
 			redPos = { 2009.956f, 12.0f, 1561.171f };
 			blueDir = { 0.f, -83.897f, 0.f };
