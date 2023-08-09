@@ -169,19 +169,17 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 
 		TurretSpawn(milliSeconds);
 
+		thread t2(std::bind(&Room::TimeThread, this));
+
+		t2.detach();
+
 		Sleep(3000);
 
 		MinionSpawn(1000, 0);
 
-		
-
 		for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
 			MonsterSpawn(1000, (UnitType)i);
-		}
-
-		thread t2(std::bind(&Room::TimeThread, this));
-
-		t2.detach();
+		}	
 
 	});
 
