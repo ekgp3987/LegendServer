@@ -176,7 +176,7 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 		
 
 		for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
-			MonsterSpawn(0, (UnitType)i);
+			MonsterSpawn(1000, (UnitType)i);
 		}
 
 		thread t2(std::bind(&Room::TimeThread, this));
