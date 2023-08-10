@@ -487,18 +487,18 @@ void ClientPacketHandler::Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* 
 
 	MtrlInfoPacket mtrlInfo = pkt->mtrlInfo;
 
-	PKT_C_OBJECT_MTRL::MtrlNameList mtrlNames = pkt->GetMtrlNameList();
+	PKT_C_OBJECT_MTRL::TexNameList texNames = pkt->GetTexNameList();
 
-	wstring resultMtrlName = L"";
-	for (auto& mtrlName : mtrlNames) {
-		resultMtrlName.push_back(mtrlName.mtrlName);
+	wstring resultTexName = L"";
+	for (auto& texName : texNames) {
+		resultTexName.push_back(texName.texName);
 	}
 
 	PKT_S_OBJECT_MTRL_WRITE pktWriter(mtrlInfo);
 
-	PKT_S_OBJECT_MTRL_WRITE::MtrlNameList mtrlName = pktWriter.ReserveMtrlNameList(resultMtrlName.size());
-	for (int i = 0; i < resultMtrlName.size(); i++) {
-		mtrlName[i] = { resultMtrlName[i] };
+	PKT_S_OBJECT_MTRL_WRITE::TexNameList texName = pktWriter.ReserveTexNameList(resultTexName.size());
+	for (int i = 0; i < resultTexName.size(); i++) {
+		texName[i] = { resultTexName[i] };
 	}
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
