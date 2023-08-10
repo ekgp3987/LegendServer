@@ -319,11 +319,11 @@ void ClientPacketHandler::Handle_C_SKILL_PROJECTILE(PacketSessionRef& session, B
 	}
 	//여기까지 패킷 받는 부분 밑에서 보내는 패킷 작성
 
-	int projectileNum = pkt->skillInfo.projectileCount;
 
 	Projectile* projectile = new Projectile;
 
 	SkillInfo skillInfo = pkt->skillInfo;
+	int projectileNum = pkt->skillInfo.projectileCount;
 
 	PKT_S_SKILL_PROJECTILE_WRITE pktWriter(projectile->GetObjectId(), skillInfo);
 
@@ -335,7 +335,6 @@ void ClientPacketHandler::Handle_C_SKILL_PROJECTILE(PacketSessionRef& session, B
 		delete projectile;
 		projectile = new Projectile;
 	}
-
 	delete projectile;
 }
 

@@ -300,9 +300,9 @@ public:
 
     UINT16    SkillLevel; // 스킬레벨
     SkillType skillType;  // 어떤 스킬인지 모아둔 enum 중 하나
-    int        projectileCount; // 투사체가 몇개인지
 
     vec3Server	offsetPos;  // 중점기준 offset
+    int        projectileCount = 1; // 투사체가 몇개인지
 
     // TargetId == -1일 경우 사용
     bool		UseMousePos;    // mousePos에 생겨야하는 스킬
