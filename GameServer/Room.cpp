@@ -387,39 +387,51 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		}
 		{
 			cout << "1차 블루 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
-			for (int i = 0; i < 4; i++) {
-				SetObjectInfo(objectInfo, turretRef->GetObjectId() + i, UnitType::TURRET, Faction::BLUE, laneType, objectMove);
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-				Broadcast(sendBuffer, nullptr);
+			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
 			}
+
+			delete turret;
 		}
 		{
 			cout << "1차 레드 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
-			for (int i = 0; i < 4; i++) {
-				SetObjectInfo(objectInfo, turretRef->GetObjectId()+i, UnitType::TURRET, Faction::RED, laneType, objectMove);
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-				Broadcast(sendBuffer, nullptr);
+
+			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
 			}
+
+			delete turret;
+
 		}
 	}
 
@@ -453,36 +465,50 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		}
 		{
 			cout << "2차 블루 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
+			}
+
+			delete turret;
 		}
 		{
 			cout << "2차 레드 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
+			}
+
+			delete turret;
 		}
 	}
 
@@ -516,36 +542,50 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		}
 		{
 			cout << "3차 블루 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
+			}
+
+			delete turret;
 		}
 		{
 			cout << "3차 레드 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
+			}
+
+			delete turret;
 		}
 	}
 
@@ -570,36 +610,50 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		}
 		{
 			cout << "블루 쌍둥이 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
+			}
+
+			delete turret;
 		}
 		{
 			cout << "레드 쌍둥이 타워 생성" << endl;
-			TurretRef turretRef = MakeShared<Turret>();
+			Turret* turret = new Turret;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = turretRef->GetObjectInfo();
+			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			CC CCType = CC::CLEAR;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, turretRef->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
+			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 			Broadcast(sendBuffer, nullptr);
+
+			for (int i = 0; i < 3; i++) {
+				delete turret;
+				turret = new Turret;
+			}
+
+			delete turret;
 		}
 	}
 }
