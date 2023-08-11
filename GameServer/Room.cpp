@@ -376,7 +376,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 		if (j == 1) {
 			laneType = Lane::MID;
 			bluePos = { 861.113f, 12.f, 941.186f };
-			redPos = { 1328.513f, 12.0f, 1250.263f };
+			redPos = { 1320.513f, 12.0f, 1253.263f };
 			blueDir = { 180.f, -47.597f, -180.f };
 			redDir = { 0.f, 46.978f, 0.f };
 		}
