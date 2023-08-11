@@ -263,7 +263,7 @@ void Room::NexusSpawn( uint64 milliSeconds)
 		ObjectInfo& objectInfo = nexusRef->GetObjectInfo();
 		ObjectMove::MoveDir moveDir = { .0f,.0f,.0f };
 		ObjectMove::Pos pos = { 229.7f ,15.9f, 241.5f };
-		CC CCType = CC::CLEAR;
+		UINT CCType = CC::NO_CC;
 		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 		SetObjectInfo(objectInfo, nexusRef->GetObjectId(), UnitType::NEXUS, Faction::BLUE, Lane::NONE, objectMove);
 
@@ -280,7 +280,7 @@ void Room::NexusSpawn( uint64 milliSeconds)
 		ObjectInfo& objectInfo = nexusRef->GetObjectInfo();
 		ObjectMove::MoveDir moveDir = { .0f,.0f,.0f };
 		ObjectMove::Pos pos = { 1952.174f ,15.26f, 1956.22f };
-		CC CCType = CC::CLEAR;
+		UINT CCType = CC::NO_CC;
 		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 		SetObjectInfo(objectInfo, nexusRef->GetObjectId(), UnitType::NEXUS, Faction::RED, Lane::NONE, objectMove);
 
@@ -328,7 +328,7 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = inhibitorRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, inhibitorRef->GetObjectId(), UnitType::INHIBITOR, Faction::BLUE, laneType, objectMove);
 
@@ -345,7 +345,7 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = inhibitorRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, inhibitorRef->GetObjectId(), UnitType::INHIBITOR, Faction::RED, laneType, objectMove);
 
@@ -395,7 +395,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
@@ -418,7 +418,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
@@ -473,7 +473,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
@@ -496,7 +496,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
@@ -550,7 +550,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
@@ -573,7 +573,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
@@ -618,7 +618,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::BLUE, laneType, objectMove);
 
@@ -641,7 +641,7 @@ void Room::TurretSpawn( uint64 milliSeconds)
 			ObjectInfo& objectInfo = turret->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, turret->GetObjectId(), UnitType::TURRET, Faction::RED, laneType, objectMove);
 
@@ -684,7 +684,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SUPER_MINION, Faction::BLUE, inhibitorLane, objectMove);
 
@@ -703,7 +703,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SUPER_MINION, Faction::BLUE, inhibitorLane, objectMove);
 
@@ -722,7 +722,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SUPER_MINION, Faction::BLUE, inhibitorLane, objectMove);
 
@@ -746,7 +746,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SUPER_MINION, Faction::RED, inhibitorLane, objectMove);
 
@@ -766,7 +766,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SUPER_MINION, Faction::RED, inhibitorLane, objectMove);
 
@@ -786,7 +786,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SUPER_MINION, Faction::RED, inhibitorLane, objectMove);
 
@@ -837,7 +837,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::MELEE_MINION, Faction::BLUE, laneType, objectMove);
 
@@ -854,7 +854,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::MELEE_MINION, Faction::RED, laneType, objectMove);
 
@@ -898,7 +898,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 			ObjectMove::Pos pos = bluePos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::BLUE, laneType, objectMove);
 
@@ -915,7 +915,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 			ObjectMove::Pos pos = redPos;
-			CC CCType = CC::CLEAR;
+			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::RED, laneType, objectMove);
 
@@ -960,7 +960,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = bluePos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::BLUE, laneType, objectMove);
 
@@ -978,7 +978,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
 				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
 				ObjectMove::Pos pos = redPos;
-				CC CCType = CC::CLEAR;
+				UINT CCType = CC::NO_CC;
 				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::RED, laneType, objectMove);
 
@@ -1009,7 +1009,7 @@ void Room::MonsterSpawn( uint64 milliSeconds, UnitType _monsterType)
 	ObjectInfo& objectInfo = monsterRef->GetObjectInfo();
 	ObjectMove::MoveDir moveDir = { 0.f,0.f,0.f };
 	ObjectMove::Pos pos = { 10.f, 10.f, 10.f };
-	CC CCType = CC::CLEAR;
+	UINT CCType = CC::NO_CC;
 	ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 	SetObjectInfo(objectInfo, monsterRef->GetObjectId(), _monsterType, Faction::NONE, Lane::NONE, objectMove);
 

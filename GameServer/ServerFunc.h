@@ -134,14 +134,14 @@ enum class SkillType
 };
 
 // 군중 제어기
-enum class CC
+enum CC : uint32_t
 {
-    CLEAR = 0,
-    SLOW = 1 << 0,
-    SILENCE = 1 << 1,
-    ROOT = 1 << 2,
-    STUN = 1 << 3,
-    AIRBORNE = 1 << 4,
+    NO_CC = 0b00000000,
+    SLOW = 0b00000001,
+    SILENCE = 0b00000010,
+    ROOT = 0b00000100,
+    STUN = 0b00001000,
+    AIRBORNE = 0b00010000,
 };
 
 enum TEX_PARAM
@@ -182,7 +182,7 @@ public:
     };
 public:
     ObjectMove() {}
-    ObjectMove(int _LV, float _HP, float _MP, float _AttackPower, float _DefencePower, float MaxHP, float MaxMP, bool bUnitDead, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos, CC _CC)
+    ObjectMove(int _LV, float _HP, float _MP, float _AttackPower, float _DefencePower, float MaxHP, float MaxMP, bool bUnitDead, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos, UINT _CC)
         : LV(_LV)
         , HP(_HP)
         , MP(_MP)
@@ -205,7 +205,7 @@ public:
 
     MoveDir moveDir;
     Pos pos;
-    CC  CC;
+    UINT  CC;
 };
 
 struct ObjectInfo {
