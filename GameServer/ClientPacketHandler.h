@@ -887,11 +887,18 @@ struct PKT_C_OBJECT_MTRL {
 	}
 
 	using TexNameList = PacketList<MtrlInfoPacket::texNameItem>;
+	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
 
 	TexNameList GetTexNameList() {
 		BYTE* data = reinterpret_cast<BYTE*>(this);
 		data += mtrlInfo.texNameOffset;
 		return TexNameList(reinterpret_cast<MtrlInfoPacket::texNameItem*>(data), mtrlInfo.texNameCount);
+	}
+
+	MtrlNameList GetMtrlNameList() {
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += mtrlInfo.mtrlNameOffset;
+		return MtrlNameList(reinterpret_cast<MtrlInfoPacket::mtrlNameItem*>(data), mtrlInfo.mtrlNameCount);
 	}
 };
 #pragma pack()
@@ -921,11 +928,18 @@ struct PKT_S_OBJECT_MTRL {
 	}
 
 	using TexNameList = PacketList<MtrlInfoPacket::texNameItem>;
+	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
 
-	TexNameList GetMtrlNameList() {
+	TexNameList GetTexNameList() {
 		BYTE* data = reinterpret_cast<BYTE*>(this);
 		data += mtrlInfo.texNameOffset;
 		return TexNameList(reinterpret_cast<MtrlInfoPacket::texNameItem*>(data), mtrlInfo.texNameCount);
+	}
+
+	MtrlNameList GetMtrlNameList() {
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += mtrlInfo.mtrlNameOffset;
+		return MtrlNameList(reinterpret_cast<MtrlInfoPacket::mtrlNameItem*>(data), mtrlInfo.mtrlNameCount);
 	}
 };
 #pragma pack()
@@ -1577,6 +1591,8 @@ class PKT_C_OBJECT_MTRL_WRITE {
 public:
 	using TexNameList = PacketList<MtrlInfoPacket::texNameItem>;
 	using TexNameItem = MtrlInfoPacket::texNameItem;
+	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
+	using MtrlNameItem = MtrlInfoPacket::mtrlNameItem;
 
 	PKT_C_OBJECT_MTRL_WRITE(MtrlInfoPacket  _mtrlInfo)
 	{
@@ -1595,6 +1611,13 @@ public:
 		_pkt->mtrlInfo.texNameOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
 		_pkt->mtrlInfo.texNameCount = _texNameCount;
 		return TexNameList(firstBuffsListItem, _texNameCount);
+	}
+
+	MtrlNameList ReserveMtrlNameList(uint16 _mtrlNameCount) {
+		MtrlNameItem* firstBuffsListItem = _bw.Reserve<MtrlNameItem>(_mtrlNameCount);
+		_pkt->mtrlInfo.mtrlNameOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
+		_pkt->mtrlInfo.mtrlNameCount = _mtrlNameCount;
+		return MtrlNameList(firstBuffsListItem, _mtrlNameCount);
 	}
 
 	SendBufferRef CloseAndReturn()
@@ -1618,6 +1641,8 @@ class PKT_S_OBJECT_MTRL_WRITE {
 public:
 	using TexNameList = PacketList<MtrlInfoPacket::texNameItem>;
 	using TexNameItem = MtrlInfoPacket::texNameItem;
+	using MtrlNameList = PacketList<MtrlInfoPacket::mtrlNameItem>;
+	using MtrlNameItem = MtrlInfoPacket::mtrlNameItem;
 
 	PKT_S_OBJECT_MTRL_WRITE(uint64 _ownerId, MtrlInfoPacket  _mtrlInfo)
 	{
@@ -1637,6 +1662,13 @@ public:
 		_pkt->mtrlInfo.texNameOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
 		_pkt->mtrlInfo.texNameCount = _texNameCount;
 		return TexNameList(firstBuffsListItem, _texNameCount);
+	}
+
+	MtrlNameList ReserveMtrlNameList(uint16 _mtrlNameCount) {
+		MtrlNameItem* firstBuffsListItem = _bw.Reserve<MtrlNameItem>(_mtrlNameCount);
+		_pkt->mtrlInfo.mtrlNameOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
+		_pkt->mtrlInfo.mtrlNameCount = _mtrlNameCount;
+		return MtrlNameList(firstBuffsListItem, _mtrlNameCount);
 	}
 
 	SendBufferRef CloseAndReturn()

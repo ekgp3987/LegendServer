@@ -204,7 +204,7 @@ void ClientPacketHandler::Handle_C_PLAYER_MOVE(PacketSessionRef& session, BYTE* 
 
 	BufferReader br(buffer, len);
 
-	cout << "Handle_C_MOVE에 진입함" << endl;
+	//cout << "Handle_C_MOVE에 진입함" << endl;
 
 	PKT_C_PLAYER_MOVE* pkt = reinterpret_cast<PKT_C_PLAYER_MOVE*>(buffer);
 
@@ -267,7 +267,7 @@ void ClientPacketHandler::Handle_C_OBJECT_ANIM(PacketSessionRef& session, BYTE* 
 
 void ClientPacketHandler::Handle_C_OBJECT_MOVE(PacketSessionRef& session, BYTE* buffer, int32 len)
 {
-	cout << "C_OBJECT_MOVE에 진입" << endl;
+	//cout << "C_OBJECT_MOVE에 진입" << endl;
 
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
@@ -289,7 +289,7 @@ void ClientPacketHandler::Handle_C_OBJECT_MOVE(PacketSessionRef& session, BYTE* 
 	uint64 objectId = pkt->objectId;
 	ObjectMove objectMobe = pkt->objectMove;
 
-	cout << "오브젝트 ID : " << objectId << endl;
+	//cout << "오브젝트 ID : " << objectId << endl;
 
 	PKT_S_OBJECT_MOVE_WRITE pktWriter(objectId, objectMobe);	
 
@@ -492,10 +492,16 @@ void ClientPacketHandler::Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* 
 	MtrlInfoPacket mtrlInfo = pkt->mtrlInfo;
 
 	PKT_C_OBJECT_MTRL::TexNameList texNames = pkt->GetTexNameList();
+	PKT_C_OBJECT_MTRL::MtrlNameList mtrlNames = pkt->GetMtrlNameList();
 
 	wstring resultTexName = L"";
 	for (auto& texName : texNames) {
 		resultTexName.push_back(texName.texName);
+	}
+
+	wstring resultMtrlName = L"";
+	for (auto& mtrlName : mtrlNames) {
+		resultMtrlName.push_back(mtrlName.mtrlName);
 	}
 
 	PKT_S_OBJECT_MTRL_WRITE pktWriter(gameSession->GetPlayer()->GetObjectId(), mtrlInfo);
@@ -504,6 +510,11 @@ void ClientPacketHandler::Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* 
 	PKT_S_OBJECT_MTRL_WRITE::TexNameList texName = pktWriter.ReserveTexNameList(resultTexName.size());
 	for (int i = 0; i < resultTexName.size(); i++) {
 		texName[i] = { resultTexName[i] };
+	}
+
+	PKT_S_OBJECT_MTRL_WRITE::MtrlNameList mtrlName = pktWriter.ReserveMtrlNameList(resultMtrlName.size());
+	for (int i = 0; i < resultMtrlName.size(); i++) {
+		mtrlName[i] = { resultMtrlName[i] };
 	}
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();

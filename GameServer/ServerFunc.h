@@ -365,12 +365,20 @@ struct MtrlInfoPacket
     UINT64 targetId;
     int iMtrlIndex;
     TEX_PARAM  tex_param;
+    bool IsSetTexParamUsage;
     
     uint16 texNameOffset;
     uint16 texNameCount;
 
+    uint16 mtrlNameOffset;
+    uint16 mtrlNameCount;
+
     struct texNameItem {//¿¹½Ã L"texture\\FBXTexture\\alphaTex.png"
         wchar_t texName;
+    };
+
+    struct mtrlNameItem {
+        wchar_t mtrlName;
     };
     
     bool Validate(BYTE* packetStart, uint16 packetSize, OUT uint32& size) {
@@ -378,6 +386,11 @@ struct MtrlInfoPacket
             return false;
 
         size += texNameCount * sizeof(texNameItem);
+
+        if (mtrlNameOffset + mtrlNameCount * sizeof(mtrlNameItem) > packetSize)
+            return false;
+
+        size += mtrlNameCount * sizeof(mtrlNameItem);
         return true;
     }
 };
