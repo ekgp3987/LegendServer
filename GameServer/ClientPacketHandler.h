@@ -791,6 +791,7 @@ struct PKT_C_SOUND {
 struct PKT_S_SOUND {
 	uint16 packetSize;
 	uint16 packetId;
+	uint64 soundId;
 	SoundInfoPacket soundInfo;
 
 	bool Validate() {
@@ -899,6 +900,7 @@ struct PKT_C_OBJECT_MTRL {
 struct PKT_S_OBJECT_MTRL {
 	uint16		packetSize;
 	uint16		packetId;
+	uint64		ownerId;
 	MtrlInfoPacket mtrlInfo;
 
 	bool Validate() {
@@ -1474,7 +1476,7 @@ public:
 	using SoundNameList = PacketList<SoundInfoPacket::soundNameItem>;
 	using SoundNameItem = SoundInfoPacket::soundNameItem;
 
-	PKT_S_SOUND_WRITE(SoundInfoPacket _soundInfo)
+	PKT_S_SOUND_WRITE(uint64 _soundId, SoundInfoPacket _soundInfo)
 	{
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
@@ -1483,6 +1485,7 @@ public:
 		_pkt = _bw.Reserve<PKT_S_SOUND>();
 		_pkt->packetSize = 0; // To Fill
 		_pkt->packetId = S_SOUND;
+		_pkt->soundId = _soundId;
 		_pkt->soundInfo = _soundInfo;
 	}
 
@@ -1616,7 +1619,7 @@ public:
 	using TexNameList = PacketList<MtrlInfoPacket::texNameItem>;
 	using TexNameItem = MtrlInfoPacket::texNameItem;
 
-	PKT_S_OBJECT_MTRL_WRITE(MtrlInfoPacket  _mtrlInfo)
+	PKT_S_OBJECT_MTRL_WRITE(uint64 _ownerId, MtrlInfoPacket  _mtrlInfo)
 	{
 		_sendBuffer = GSendBufferManager->Open(4096);
 		// 초기화
@@ -1625,6 +1628,7 @@ public:
 		_pkt = _bw.Reserve<PKT_S_OBJECT_MTRL>();
 		_pkt->packetSize = 0; // To Fill
 		_pkt->packetId = S_OBJECT_MTRL;
+		_pkt->ownerId = _ownerId;
 		_pkt->mtrlInfo = _mtrlInfo;
 	}
 

@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "Room.h"
 #include "Projectile.h"
+#include "Sound.h"
 
 #include <string>
 #include <codecvt>
@@ -455,7 +456,9 @@ void ClientPacketHandler::Handle_C_SOUND(PacketSessionRef& session, BYTE* buffer
 		resultSoundName.push_back(soundName.soundName);
 	}
 
-	PKT_S_SOUND_WRITE pktWriter(soundInfo);
+	Sound* sound = new Sound;
+
+	PKT_S_SOUND_WRITE pktWriter(sound->GetObjectId(), soundInfo);
 
 	PKT_S_SOUND_WRITE::SoundNameList soundName = pktWriter.ReserveAnimNameList(resultSoundName.size());
 	for (int i = 0; i < resultSoundName.size(); i++) {
@@ -465,6 +468,8 @@ void ClientPacketHandler::Handle_C_SOUND(PacketSessionRef& session, BYTE* buffer
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 
 	GRoom.Broadcast(sendBuffer, nullptr);
+
+	delete sound;
 }
 
 void ClientPacketHandler::Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* buffer, int32 len)
@@ -493,7 +498,8 @@ void ClientPacketHandler::Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* 
 		resultTexName.push_back(texName.texName);
 	}
 
-	PKT_S_OBJECT_MTRL_WRITE pktWriter(mtrlInfo);
+	PKT_S_OBJECT_MTRL_WRITE pktWriter(gameSession->GetPlayer()->GetObjectId(), mtrlInfo);
+	cout << "Owner의 아이디 : " << gameSession->GetPlayer()->GetObjectId() << endl;
 
 	PKT_S_OBJECT_MTRL_WRITE::TexNameList texName = pktWriter.ReserveTexNameList(resultTexName.size());
 	for (int i = 0; i < resultTexName.size(); i++) {

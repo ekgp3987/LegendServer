@@ -40,6 +40,9 @@
     <Filter Include="GameContents\Object\Monster">
       <UniqueIdentifier>{7b08a46c-c08c-485c-a6d6-9653ab2c13df}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameContents\Object\Sound">
+      <UniqueIdentifier>{c056776e-996a-40f4-8489-b8dd9dd8204e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -93,6 +96,9 @@
     <ClCompile Include="Monster.cpp">
       <Filter>GameContents\Object\Monster</Filter>
     </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>GameContents\Object\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -142,6 +148,9 @@
     </ClInclude>
     <ClInclude Include="Nexus.h">
       <Filter>GameContents\Object\Nexus</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>GameContents\Object\Sound</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
