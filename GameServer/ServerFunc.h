@@ -367,6 +367,7 @@ struct MtrlInfoPacket
     TEX_PARAM  tex_param;
     bool IsSetTexParamUsage;
     
+
     uint16 texNameOffset;
     uint16 texNameCount;
 

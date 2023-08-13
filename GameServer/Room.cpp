@@ -306,14 +306,14 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 			redDir = { -180.f,0.f,-180.f };
 		}
 		if (j == 1) {
-			laneType == Lane::MID;
+			laneType = Lane::MID;
 			bluePos = { 475.717f, 14.2f, 473.633f };
 			redPos = { 1711.f,14.8f,1721.f };
 			blueDir = { 0.f,-45.f,0.f };
 			redDir = { -180.f,0.f,-180.f };
 		}
 		if (j == 2) {
-			laneType == Lane::BOTTOM;
+			laneType = Lane::BOTTOM;
 			bluePos = { 501.97f, 14.2f, 183.0f };
 			redPos = { 2006.9f,14.8f,1670.1f };
 			blueDir = { 0.f,2.f,0.f };
