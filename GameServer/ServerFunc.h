@@ -117,10 +117,32 @@ enum ChampionType
     MALPHITE,
 };
 
+//enum class SkillType
+//{
+//    NONE,
+//    BASIC_ATTACK,      // 모든 종류의 평타 (미니언/정글몹의 기본공격 포함)
+//    JINX_Q,
+//    JINX_W,
+//    JINX_E,
+//    JINX_R,
+//    DARIUS_Q,
+//    DARIUS_W,
+//    DARIUS_E,
+//    DARIUS_R,
+//    MALPHITE_Q,
+//    MALPHITE_W,
+//    MALPHITE_E,
+//    MALPHITE_R,
+//};
+//
+// 
 enum class SkillType
 {
     NONE,
-    BASIC_ATTACK,      // 모든 종류의 평타 (미니언/정글몹의 기본공격 포함)
+    BASIC_ATTACK,         // 몹의 근접 평타
+    BASIC_RANGED_ATTACK,   // 미니언 원거리 평타
+    TURRET_BASIC_ATTACK,
+    JINX_BASIC_ATTACK,
     JINX_Q,
     JINX_W,
     JINX_E,
@@ -129,12 +151,12 @@ enum class SkillType
     DARIUS_W,
     DARIUS_E,
     DARIUS_R,
+    MALPHITE_BASIC_ATTACK,
     MALPHITE_Q,
     MALPHITE_W,
     MALPHITE_E,
     MALPHITE_R,
 };
-
 // 군중 제어기
 enum CC : uint32_t
 {
@@ -184,12 +206,15 @@ public:
     };
 public:
     ObjectMove() {}
-    ObjectMove(int _LV, float _HP, float _MP, float _AttackPower, float _DefencePower, float MaxHP, float MaxMP, bool bUnitDead, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos, UINT _CC)
+    ObjectMove(int _LV, float _HP, float _MP, float _AttackPower, float _DefencePower, float _MaxHP, float _MaxMP, bool _bUnitDead, ObjectMove::MoveDir _moveDir, ObjectMove::Pos _pos, UINT _CC)
         : LV(_LV)
         , HP(_HP)
         , MP(_MP)
         , AttackPower(_AttackPower)
         , DefencePower(_DefencePower)
+        , MaxHP(_MaxHP)
+        , MaxMP(_MaxMP)
+        , bUnitDead(_bUnitDead)
         , moveDir(_moveDir)
         , pos(_pos)
         , CC(_CC)

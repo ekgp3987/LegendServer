@@ -23,7 +23,14 @@ public://Spawn 관련 함수 모음. GameStartSpawn()에서 호출 중.
 	void MonsterSpawn(uint64 milliSeconds, UnitType _monsterType);
 
 public://Respawn 관련 함수 모음. RemoveObject 함수에서 호출중.
-	void InhibitorRespawn(uint64 milliSeconds, InhibitorRef _inhibitorRef);
+			//이 함수는 안쓰고 있습니다. 억제기 리스폰 테스트 후 필요없으면 버림
+	/*void InhibitorRespawn(uint64 milliSeconds, InhibitorRef _inhibitorRef);*/
+
+public://Find 함수 모음
+	InhibitorRef InhibitorFind(uint64 _objectId);
+
+public://억제기 상태 체크 함수 모음
+	void InhibitorStatusCheck(InhibitorRef _inhibitorRef, ObjectMove _objectMove);
 
 public://Set(), Get() 함수 모음
 	void SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, UnitType _unitType, Faction _factionType, Lane _laneType, ObjectMove _objectMove);

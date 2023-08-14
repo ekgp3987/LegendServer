@@ -177,11 +177,11 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 
 		Sleep(3000);
 
-		//MinionSpawn(1000, 0);
-		//
-		//for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
-		//	MonsterSpawn(1000, (UnitType)i);
-		//}	
+		MinionSpawn(1000, 0);
+		
+		for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
+			MonsterSpawn(1000, (UnitType)i);
+		}	
 
 		});
 
@@ -224,33 +224,33 @@ void Room::RemoveObject(uint64 _objectID)
 	_blueMinions.erase(_objectID);
 	_redMinions.erase(_objectID);
 
-	auto it2 = _blueInhibitors.find(_objectID);
-	if (it2 != _blueInhibitors.end()) {
-		cout << "블루팀 억제기가 파괴됨" << endl;
-		uint64 inhibitorID = it2->first;
-		InhibitorRef inhibitorRef = it2->second;
-		_brokenInhibitors[inhibitorID] = inhibitorRef;
+	//auto it2 = _blueInhibitors.find(_objectID);
+	//if (it2 != _blueInhibitors.end()) {
+	//	cout << "블루팀 억제기가 파괴됨" << endl;
+	//	uint64 inhibitorID = it2->first;
+	//	InhibitorRef inhibitorRef = it2->second;
+	//	_brokenInhibitors[inhibitorID] = inhibitorRef;
 
-		thread t3(std::bind(&Room::InhibitorRespawn, this, 300000, inhibitorRef));
-		t3.detach();
-	}
-	else {
-		return;
-	}
+	//	thread t3(std::bind(&Room::InhibitorRespawn, this, 300000, inhibitorRef));
+	//	t3.detach();
+	//}
+	//else {
+	//	return;
+	//}
 
-	auto it3 = _redInhibitors.find(_objectID);
-	if (it3 != _redInhibitors.end()) {
-		cout << "레드팀 억제기가 파괴됨" << endl;
-		uint64 inhibitorID = it3->first;
-		InhibitorRef inhibitorRef = it3->second;
-		_brokenInhibitors[inhibitorID] = inhibitorRef;
+	//auto it3 = _redInhibitors.find(_objectID);
+	//if (it3 != _redInhibitors.end()) {
+	//	cout << "레드팀 억제기가 파괴됨" << endl;
+	//	uint64 inhibitorID = it3->first;
+	//	InhibitorRef inhibitorRef = it3->second;
+	//	_brokenInhibitors[inhibitorID] = inhibitorRef;
 
-		thread t3(std::bind(&Room::InhibitorRespawn, this, 300000, inhibitorRef));
-		t3.detach();
-	}
-	else {
-		return;
-	}
+	//	thread t3(std::bind(&Room::InhibitorRespawn, this, 300000, inhibitorRef));
+	//	t3.detach();
+	//}
+	//else {
+	//	return;
+	//}
 }
 
 void Room::NexusSpawn( uint64 milliSeconds)
@@ -325,12 +325,14 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 			_blueInhibitors[inhibitorRef->GetObjectId()] = inhibitorRef;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = inhibitorRef->GetObjectInfo();
+			ObjectInfo& objectInfo = inhibitorRef->GetCurObjectInfo();
 			ObjectMove::MoveDir moveDir = blueDir;
 			ObjectMove::Pos pos = bluePos;
 			UINT CCType = CC::NO_CC;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 4000.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, inhibitorRef->GetObjectId(), UnitType::INHIBITOR, Faction::BLUE, laneType, objectMove);
+
+			inhibitorRef->SetPrevObjectInfo(objectInfo);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
@@ -342,13 +344,14 @@ void Room::InhibitorSpawn( uint64 milliSeconds)
 			_redInhibitors[inhibitorRef->GetObjectId()] = inhibitorRef;
 
 			//ObjectInfo 설정
-			ObjectInfo& objectInfo = inhibitorRef->GetObjectInfo();
+			ObjectInfo& objectInfo = inhibitorRef->GetCurObjectInfo();
 			ObjectMove::MoveDir moveDir = redDir;
 			ObjectMove::Pos pos = redPos;
 			UINT CCType = CC::NO_CC;
 			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
 			SetObjectInfo(objectInfo, inhibitorRef->GetObjectId(), UnitType::INHIBITOR, Faction::RED, laneType, objectMove);
 
+			inhibitorRef->SetPrevObjectInfo(objectInfo);
 
 			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
 			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
@@ -666,8 +669,8 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 
 	//슈퍼미니언 생성 방복문
 	for (auto it = _brokenInhibitors.begin(); it != _brokenInhibitors.end(); it++) {
-		Faction inhibitorFaction = it->second->GetFaction();
-		Lane inhibitorLane = it->second->GetObjectInfo().lane;
+		Faction inhibitorFaction = it->second->GetCurObjectInfo().faction;
+		Lane inhibitorLane = it->second->GetCurObjectInfo().lane;
 
 		ObjectMove::Pos bluePos = {};
 		ObjectMove::Pos redPos = {};
@@ -678,7 +681,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 
 				cout << "블루 슈퍼미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
-				_redMinions[minionRef->GetObjectId()] = minionRef;
+				_blueMinions[minionRef->GetObjectId()] = minionRef;
 
 				//ObjectInfo 설정
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
@@ -697,7 +700,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 
 				cout << "블루 슈퍼미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
-				_redMinions[minionRef->GetObjectId()] = minionRef;
+				_blueMinions[minionRef->GetObjectId()] = minionRef;
 
 				//ObjectInfo 설정
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
@@ -716,7 +719,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 
 				cout << "블루 슈퍼미니언 생성" << endl;
 				MinionRef minionRef = MakeShared<Minion>();
-				_redMinions[minionRef->GetObjectId()] = minionRef;
+				_blueMinions[minionRef->GetObjectId()] = minionRef;
 
 				//ObjectInfo 설정
 				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
@@ -803,7 +806,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 			cout << "ERROR : 억제기의 Faction이 지정이 안되어 있습니다." << endl;
 		}
 	}
-
+	Sleep(1000);
 	//한 라인에 총 3마리의 근접 미니언 생성
 	for (int i = 0; i < 1; i++) {
 		//3라인당 미니언 생성
@@ -867,136 +870,138 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 		Sleep(1000);
 	}
 
-	//대포미니언 생성
-	for (int j = 0; j < 3; j++) {
-		Lane laneType = Lane::END;
-		ObjectMove::Pos bluePos = {};
-		ObjectMove::Pos redPos = {};
-		if (j == 0) {
-			laneType = Lane::TOP;
-			bluePos = { 165.0f, 12.0f, 309.0f };
-			redPos = { 1882.0,12.0,2036.0 };
-		}
-		else if (j == 1) {
-			laneType = Lane::MID;
-			bluePos = { 300.0f, 12.0f, 300.0f };
-			redPos = { 1883.0f,12.0f,1906.0f };
-		}
-		else if (j == 2) {
-			laneType = Lane::BOTTOM;
-			bluePos = { 308.0f, 12.0f, 181.0f };
-			redPos = { 2013.0f,12.0f,1911.0f };
-		}
-		{
-			if (laneType == Lane::END) laneType = Lane::TOP;
+	////대포미니언 생성
+	//for (int j = 0; j < 3; j++) {
+	//	Lane laneType = Lane::END;
+	//	ObjectMove::Pos bluePos = {};
+	//	ObjectMove::Pos redPos = {};
+	//	if (j == 0) {
+	//		laneType = Lane::TOP;
+	//		bluePos = { 165.0f, 12.0f, 309.0f };
+	//		redPos = { 1882.0,12.0,2036.0 };
+	//	}
+	//	else if (j == 1) {
+	//		laneType = Lane::MID;
+	//		bluePos = { 300.0f, 12.0f, 300.0f };
+	//		redPos = { 1883.0f,12.0f,1906.0f };
+	//	}
+	//	else if (j == 2) {
+	//		laneType = Lane::BOTTOM;
+	//		bluePos = { 308.0f, 12.0f, 181.0f };
+	//		redPos = { 2013.0f,12.0f,1911.0f };
+	//	}
+	//	{
+	//		if (laneType == Lane::END) laneType = Lane::TOP;
 
-			cout << "블루 대포 미니언 생성" << endl;
-			MinionRef minionRef = MakeShared<Minion>();
-			_blueMinions[minionRef->GetObjectId()] = minionRef;
+	//		cout << "블루 대포 미니언 생성" << endl;
+	//		MinionRef minionRef = MakeShared<Minion>();
+	//		_blueMinions[minionRef->GetObjectId()] = minionRef;
 
-			//ObjectInfo 설정
-			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-			ObjectMove::Pos pos = bluePos;
-			UINT CCType = CC::NO_CC;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::BLUE, laneType, objectMove);
+	//		//ObjectInfo 설정
+	//		ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+	//		ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+	//		ObjectMove::Pos pos = bluePos;
+	//		UINT CCType = CC::NO_CC;
+	//		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+	//		SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::BLUE, laneType, objectMove);
 
-			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-			Broadcast(sendBuffer, nullptr);
-		}
-		{
-			cout << "레드 대포 미니언 생성" << endl;
-			MinionRef minionRef = MakeShared<Minion>();
-			_redMinions[minionRef->GetObjectId()] = minionRef;
+	//		PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+	//		SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+	//		Broadcast(sendBuffer, nullptr);
+	//	}
+	//	{
+	//		cout << "레드 대포 미니언 생성" << endl;
+	//		MinionRef minionRef = MakeShared<Minion>();
+	//		_redMinions[minionRef->GetObjectId()] = minionRef;
 
-			//ObjectInfo 설정
-			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-			ObjectMove::Pos pos = redPos;
-			UINT CCType = CC::NO_CC;
-			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::RED, laneType, objectMove);
-
-
-			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-			Broadcast(sendBuffer, nullptr);
-		}
-	}
-	Sleep(1000);
-
-	//한 라인에 총 3마리의 원거리 미니언 생성
-	for (int i = 0; i < 2; i++) {
-		//3라인당 미니언 생성 //j가 0이면 탑, 1이면 미드, 2면 바텀
-		for (int j = 0; j < 3; j++) {
-			Lane laneType = Lane::END;
-			ObjectMove::Pos bluePos = {};
-			ObjectMove::Pos redPos = {};
-			if (j == 0) {
-				laneType = Lane::TOP;
-				bluePos = { 165.0f, 12.0f, 309.0f };
-				redPos = { 1882.0,12.0,2036.0 };
-			}
-			else if (j == 1) {
-				laneType = Lane::MID;
-				bluePos = { 300.0f, 12.0f, 300.0f };
-				redPos = { 1883.0f,12.0f,1906.0f };
-			}
-			else if (j == 2) {
-				laneType = Lane::BOTTOM;
-				bluePos = { 292.0f, 12.0f, 191.0f };
-				redPos = { 2013.0f,12.0f,1911.0f };
-			}
-			{
-				if (laneType == Lane::END) laneType = Lane::TOP;
-
-				cout << "블루 미니언 생성" << endl;
-				MinionRef minionRef = MakeShared<Minion>();
-				_blueMinions[minionRef->GetObjectId()] = minionRef;
-
-				//ObjectInfo 설정
-				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-				ObjectMove::Pos pos = bluePos;
-				UINT CCType = CC::NO_CC;
-				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::BLUE, laneType, objectMove);
-
-				//패킷 생성
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-				Broadcast(sendBuffer, nullptr);
-			}
-			{
-				cout << "레드 미니언 생성" << endl;
-				MinionRef minionRef = MakeShared<Minion>();
-				_redMinions[minionRef->GetObjectId()] = minionRef;
-
-				//ObjectInfo 설정
-				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-				ObjectMove::Pos pos = redPos;
-				UINT CCType = CC::NO_CC;
-				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::RED, laneType, objectMove);
+	//		//ObjectInfo 설정
+	//		ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+	//		ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+	//		ObjectMove::Pos pos = redPos;
+	//		UINT CCType = CC::NO_CC;
+	//		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+	//		SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::RED, laneType, objectMove);
 
 
-				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-				Broadcast(sendBuffer, nullptr);
-			}
-		}
-		Sleep(1000);
-	}
+	//		PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+	//		SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+	//		Broadcast(sendBuffer, nullptr);
+	//	}
+	//}
+	//Sleep(1000);
+
+	////한 라인에 총 3마리의 원거리 미니언 생성
+	//for (int i = 0; i < 2; i++) {
+	//	//3라인당 미니언 생성 //j가 0이면 탑, 1이면 미드, 2면 바텀
+	//	for (int j = 0; j < 3; j++) {
+	//		Lane laneType = Lane::END;
+	//		ObjectMove::Pos bluePos = {};
+	//		ObjectMove::Pos redPos = {};
+	//		if (j == 0) {
+	//			laneType = Lane::TOP;
+	//			bluePos = { 165.0f, 12.0f, 309.0f };
+	//			redPos = { 1882.0,12.0,2036.0 };
+	//		}
+	//		else if (j == 1) {
+	//			laneType = Lane::MID;
+	//			bluePos = { 300.0f, 12.0f, 300.0f };
+	//			redPos = { 1883.0f,12.0f,1906.0f };
+	//		}
+	//		else if (j == 2) {
+	//			laneType = Lane::BOTTOM;
+	//			bluePos = { 292.0f, 12.0f, 191.0f };
+	//			redPos = { 2013.0f,12.0f,1911.0f };
+	//		}
+	//		{
+	//			if (laneType == Lane::END) laneType = Lane::TOP;
+
+	//			cout << "블루 미니언 생성" << endl;
+	//			MinionRef minionRef = MakeShared<Minion>();
+	//			_blueMinions[minionRef->GetObjectId()] = minionRef;
+
+	//			//ObjectInfo 설정
+	//			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+	//			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+	//			ObjectMove::Pos pos = bluePos;
+	//			UINT CCType = CC::NO_CC;
+	//			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+	//			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::BLUE, laneType, objectMove);
+
+	//			//패킷 생성
+	//			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+	//			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+	//			Broadcast(sendBuffer, nullptr);
+	//		}
+	//		{
+	//			cout << "레드 미니언 생성" << endl;
+	//			MinionRef minionRef = MakeShared<Minion>();
+	//			_redMinions[minionRef->GetObjectId()] = minionRef;
+
+	//			//ObjectInfo 설정
+	//			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+	//			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+	//			ObjectMove::Pos pos = redPos;
+	//			UINT CCType = CC::NO_CC;
+	//			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+	//			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::RED, laneType, objectMove);
+
+
+	//			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+	//			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+	//			Broadcast(sendBuffer, nullptr);
+	//		}
+	//	}
+	//	Sleep(1000);
+	//}
 
 	cout << "미니언 생성 패킷을 다 보냄" << endl;
 
-	////30000을 바꾸면 리스폰 시간이 변경됩니다.
+	////5000을 바꾸면 리스폰 시간이 변경됩니다.
 	// 사용시 주석을 해제해주세요.
-	//thread t3(std::bind(&Room::MinionSpawn, this, 1000, 30000));
-	//t3.detach();
+	if (GetPlayerSize() > 0) {
+		thread t3(std::bind(&Room::MinionSpawn, this, 1000, 10000));
+		t3.detach();
+	}
 }
 
 void Room::MonsterSpawn( uint64 milliSeconds, UnitType _monsterType)
@@ -1024,15 +1029,51 @@ void Room::MonsterSpawn( uint64 milliSeconds, UnitType _monsterType)
 	Broadcast(sendBuffer, nullptr);
 }
 
-void Room::InhibitorRespawn(uint64 milliSeconds, InhibitorRef _inhibitorRef)
+//void Room::InhibitorRespawn(uint64 milliSeconds, InhibitorRef _inhibitorRef)
+//{
+//	Sleep(milliSeconds);
+//
+//	PKT_S_SPAWN_OBJECT_WRITE pktWriter(_inhibitorRef->GetCurObjectInfo());
+//	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+//	Broadcast(sendBuffer, nullptr);
+//
+//	_brokenInhibitors.erase(_inhibitorRef->GetObjectId());
+//}
+
+InhibitorRef Room::InhibitorFind(uint64 _objectId)
 {
-	Sleep(milliSeconds);
+	auto it1 = _blueInhibitors.find(_objectId);
+	auto it2 = _redInhibitors.find(_objectId);
 
-	PKT_S_SPAWN_OBJECT_WRITE pktWriter(_inhibitorRef->GetObjectInfo());
-	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-	Broadcast(sendBuffer, nullptr);
+	if (it1 == _blueInhibitors.end() && it2 == _redInhibitors.end())
+		return nullptr;
+	else if (it1 != _blueInhibitors.end()) {
+		return it1->second;
+	}
+	else if (it2 != _redInhibitors.end()) {
+		return it2->second;
+	}
+}
 
-	_brokenInhibitors.erase(_inhibitorRef->GetObjectId());
+void Room::InhibitorStatusCheck(InhibitorRef _inhibitorRef, ObjectMove _objectMove)
+{
+	ObjectInfo prevInfo = _inhibitorRef->GetPrevObjectInfo();
+	ObjectInfo curInfo = _inhibitorRef->GetCurObjectInfo();
+
+	_inhibitorRef->SetPrevObjectInfo(curInfo);
+	curInfo.objectMove = _objectMove;
+	_inhibitorRef->SetCurObjectInfo(curInfo);
+
+	if (prevInfo.objectMove.bUnitDead == false && curInfo.objectMove.HP <= 0 
+		&& curInfo.objectMove.bUnitDead == true) {
+		//억제기가 파괴됨
+		_brokenInhibitors.insert({ _inhibitorRef->GetObjectId(), _inhibitorRef });
+	}
+	else if (prevInfo.objectMove.HP <= 0 && prevInfo.objectMove.bUnitDead == true
+		&& curInfo.objectMove.HP == curInfo.objectMove.MaxHP && curInfo.objectMove.bUnitDead == false) {
+		//억제기가 재생성됨
+		auto it = _brokenInhibitors.erase(_inhibitorRef->GetObjectId());
+	}
 }
 
 void Room::SetObjectInfo(OUT ObjectInfo& _objectInfo, uint64 _objectId, UnitType _unitType, Faction _faction, Lane _lane, ObjectMove _objectMove)

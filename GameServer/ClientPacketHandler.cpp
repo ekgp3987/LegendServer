@@ -287,11 +287,16 @@ void ClientPacketHandler::Handle_C_OBJECT_MOVE(PacketSessionRef& session, BYTE* 
 	}
 
 	uint64 objectId = pkt->objectId;
-	ObjectMove objectMobe = pkt->objectMove;
+	ObjectMove objectMove = pkt->objectMove;
+
+	InhibitorRef inhibitorRef = GRoom.InhibitorFind(objectId);
+	if (inhibitorRef) {
+		GRoom.InhibitorStatusCheck(inhibitorRef, objectMove);
+	}
 
 	//cout << "오브젝트 ID : " << objectId << endl;
 
-	PKT_S_OBJECT_MOVE_WRITE pktWriter(objectId, objectMobe);	
+	PKT_S_OBJECT_MOVE_WRITE pktWriter(objectId, objectMove);
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
 

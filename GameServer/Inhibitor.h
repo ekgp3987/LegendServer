@@ -1,5 +1,8 @@
 #pragma once
 #include "Object.h"
+
+#define I
+
 class Inhibitor :
     public Object
 {
@@ -8,9 +11,14 @@ public:
     ~Inhibitor();
 
 public:
-    ObjectInfo& GetObjectInfo() { return objectInfo; }
+    ObjectInfo& GetPrevObjectInfo() { return prevObjectInfo; }
+    ObjectInfo& GetCurObjectInfo() { return curObjectInfo; }
+
+    void SetPrevObjectInfo(ObjectInfo _prevObjectInfo) { prevObjectInfo = _prevObjectInfo; }
+    void SetCurObjectInfo(ObjectInfo _curObjectInfo) { curObjectInfo = _curObjectInfo; }
 
 private:
-    ObjectInfo objectInfo;
+    ObjectInfo prevObjectInfo;
+    ObjectInfo curObjectInfo;
 };
 
