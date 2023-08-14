@@ -198,6 +198,11 @@ void Room::TimeThread()
 		cout << "게임 시작 후 " << seconds << "초가 지났습니다." << endl;
 		if (GetPlayerSize() == 0)
 			return;
+
+		PKT_S_TIME_WRITE pktWriter((float)second);
+		SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+		GRoom.Broadcast(sendBuffer, nullptr);
+
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 }
