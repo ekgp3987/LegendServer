@@ -1002,7 +1002,7 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 	////5000을 바꾸면 리스폰 시간이 변경됩니다.
 	// 사용시 주석을 해제해주세요.
 	if (GetPlayerSize() > 0) {
-		thread t3(std::bind(&Room::MinionSpawn, this, 1000, 30000));
+		thread t3(std::bind(&Room::MinionSpawn, this, 1000, 90000));
 		t3.detach();
 	}
 }
