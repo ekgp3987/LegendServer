@@ -104,17 +104,20 @@ void Room::GameStart(SendBufferRef _sendBuffer, uint64 milliSeconds)
 		mPlayerMove.moveDir = ObjectMove::MoveDir{0.f,  -3.14 / 2, 0.f };
 		mPlayerMove.pos = ObjectMove::Pos{0.0f, 0.0f, 0.0f };
 
-		// Blue, Red, Blue Red 순으로 나중에 좌표 바꿔야 한다. (현재는 blue 에 다 생김)
+		// Blue1  Red, Blue Red 순으로 
 		mPlayerMove.pos = ObjectMove::Pos{ 53.0f,30.0f,27.0f };
 		playerMove.push_back(mPlayerMove);
 
-		mPlayerMove.pos = ObjectMove::Pos{ 95.0f, 30.0f, 41.0f };
+		// Red1
+		mPlayerMove.pos = ObjectMove::Pos{ 2083.0f, 30.0f, 2137.0f };
 		playerMove.push_back(mPlayerMove);
 
+		// Blue2
 		mPlayerMove.pos = ObjectMove::Pos{ 88.0f, 30.0f, 86.0f };
 		playerMove.push_back(mPlayerMove);
 
-		mPlayerMove.pos = ObjectMove::Pos{47.f, 30.f, 97.f };
+		// Red2
+		mPlayerMove.pos = ObjectMove::Pos{ 2136.f, 30.f, 2082.f };
 		playerMove.push_back(mPlayerMove);
 
 	}
@@ -177,10 +180,10 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 
 		Sleep(3000);
 
-		MinionSpawn(1000, 0);
+		MinionSpawn(1000, 500);
 		
 		for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
-			MonsterSpawn(1000, (UnitType)i);
+			MonsterSpawn(100, (UnitType)i);
 		}	
 
 		});
@@ -870,136 +873,136 @@ void Room::MinionSpawn( uint64 _spawnTickTime, uint64 _spawnTime)
 		Sleep(1000);
 	}
 
-	////대포미니언 생성
-	//for (int j = 0; j < 3; j++) {
-	//	Lane laneType = Lane::END;
-	//	ObjectMove::Pos bluePos = {};
-	//	ObjectMove::Pos redPos = {};
-	//	if (j == 0) {
-	//		laneType = Lane::TOP;
-	//		bluePos = { 165.0f, 12.0f, 309.0f };
-	//		redPos = { 1882.0,12.0,2036.0 };
-	//	}
-	//	else if (j == 1) {
-	//		laneType = Lane::MID;
-	//		bluePos = { 300.0f, 12.0f, 300.0f };
-	//		redPos = { 1883.0f,12.0f,1906.0f };
-	//	}
-	//	else if (j == 2) {
-	//		laneType = Lane::BOTTOM;
-	//		bluePos = { 308.0f, 12.0f, 181.0f };
-	//		redPos = { 2013.0f,12.0f,1911.0f };
-	//	}
-	//	{
-	//		if (laneType == Lane::END) laneType = Lane::TOP;
+	//대포미니언 생성
+	for (int j = 0; j < 3; j++) {
+		Lane laneType = Lane::END;
+		ObjectMove::Pos bluePos = {};
+		ObjectMove::Pos redPos = {};
+		if (j == 0) {
+			laneType = Lane::TOP;
+			bluePos = { 165.0f, 12.0f, 309.0f };
+			redPos = { 1882.0,12.0,2036.0 };
+		}
+		else if (j == 1) {
+			laneType = Lane::MID;
+			bluePos = { 300.0f, 12.0f, 300.0f };
+			redPos = { 1883.0f,12.0f,1906.0f };
+		}
+		else if (j == 2) {
+			laneType = Lane::BOTTOM;
+			bluePos = { 308.0f, 12.0f, 181.0f };
+			redPos = { 2013.0f,12.0f,1911.0f };
+		}
+		{
+			if (laneType == Lane::END) laneType = Lane::TOP;
 
-	//		cout << "블루 대포 미니언 생성" << endl;
-	//		MinionRef minionRef = MakeShared<Minion>();
-	//		_blueMinions[minionRef->GetObjectId()] = minionRef;
+			cout << "블루 대포 미니언 생성" << endl;
+			MinionRef minionRef = MakeShared<Minion>();
+			_blueMinions[minionRef->GetObjectId()] = minionRef;
 
-	//		//ObjectInfo 설정
-	//		ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-	//		ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-	//		ObjectMove::Pos pos = bluePos;
-	//		UINT CCType = CC::NO_CC;
-	//		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-	//		SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::BLUE, laneType, objectMove);
+			//ObjectInfo 설정
+			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+			ObjectMove::Pos pos = bluePos;
+			UINT CCType = CC::NO_CC;
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::BLUE, laneType, objectMove);
 
-	//		PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-	//		SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-	//		Broadcast(sendBuffer, nullptr);
-	//	}
-	//	{
-	//		cout << "레드 대포 미니언 생성" << endl;
-	//		MinionRef minionRef = MakeShared<Minion>();
-	//		_redMinions[minionRef->GetObjectId()] = minionRef;
+			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+			Broadcast(sendBuffer, nullptr);
+		}
+		{
+			cout << "레드 대포 미니언 생성" << endl;
+			MinionRef minionRef = MakeShared<Minion>();
+			_redMinions[minionRef->GetObjectId()] = minionRef;
 
-	//		//ObjectInfo 설정
-	//		ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-	//		ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-	//		ObjectMove::Pos pos = redPos;
-	//		UINT CCType = CC::NO_CC;
-	//		ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-	//		SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::RED, laneType, objectMove);
-
-
-	//		PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-	//		SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-	//		Broadcast(sendBuffer, nullptr);
-	//	}
-	//}
-	//Sleep(1000);
-
-	////한 라인에 총 3마리의 원거리 미니언 생성
-	//for (int i = 0; i < 2; i++) {
-	//	//3라인당 미니언 생성 //j가 0이면 탑, 1이면 미드, 2면 바텀
-	//	for (int j = 0; j < 3; j++) {
-	//		Lane laneType = Lane::END;
-	//		ObjectMove::Pos bluePos = {};
-	//		ObjectMove::Pos redPos = {};
-	//		if (j == 0) {
-	//			laneType = Lane::TOP;
-	//			bluePos = { 165.0f, 12.0f, 309.0f };
-	//			redPos = { 1882.0,12.0,2036.0 };
-	//		}
-	//		else if (j == 1) {
-	//			laneType = Lane::MID;
-	//			bluePos = { 300.0f, 12.0f, 300.0f };
-	//			redPos = { 1883.0f,12.0f,1906.0f };
-	//		}
-	//		else if (j == 2) {
-	//			laneType = Lane::BOTTOM;
-	//			bluePos = { 292.0f, 12.0f, 191.0f };
-	//			redPos = { 2013.0f,12.0f,1911.0f };
-	//		}
-	//		{
-	//			if (laneType == Lane::END) laneType = Lane::TOP;
-
-	//			cout << "블루 미니언 생성" << endl;
-	//			MinionRef minionRef = MakeShared<Minion>();
-	//			_blueMinions[minionRef->GetObjectId()] = minionRef;
-
-	//			//ObjectInfo 설정
-	//			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-	//			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-	//			ObjectMove::Pos pos = bluePos;
-	//			UINT CCType = CC::NO_CC;
-	//			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-	//			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::BLUE, laneType, objectMove);
-
-	//			//패킷 생성
-	//			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-	//			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-	//			Broadcast(sendBuffer, nullptr);
-	//		}
-	//		{
-	//			cout << "레드 미니언 생성" << endl;
-	//			MinionRef minionRef = MakeShared<Minion>();
-	//			_redMinions[minionRef->GetObjectId()] = minionRef;
-
-	//			//ObjectInfo 설정
-	//			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
-	//			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
-	//			ObjectMove::Pos pos = redPos;
-	//			UINT CCType = CC::NO_CC;
-	//			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
-	//			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::RED, laneType, objectMove);
+			//ObjectInfo 설정
+			ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+			ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+			ObjectMove::Pos pos = redPos;
+			UINT CCType = CC::NO_CC;
+			ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+			SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::SIEGE_MINION, Faction::RED, laneType, objectMove);
 
 
-	//			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
-	//			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
-	//			Broadcast(sendBuffer, nullptr);
-	//		}
-	//	}
-	//	Sleep(1000);
-	//}
+			PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+			SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+			Broadcast(sendBuffer, nullptr);
+		}
+	}
+	Sleep(1000);
+
+	//한 라인에 총 3마리의 원거리 미니언 생성
+	for (int i = 0; i < 2; i++) {
+		//3라인당 미니언 생성 //j가 0이면 탑, 1이면 미드, 2면 바텀
+		for (int j = 0; j < 3; j++) {
+			Lane laneType = Lane::END;
+			ObjectMove::Pos bluePos = {};
+			ObjectMove::Pos redPos = {};
+			if (j == 0) {
+				laneType = Lane::TOP;
+				bluePos = { 165.0f, 12.0f, 309.0f };
+				redPos = { 1882.0,12.0,2036.0 };
+			}
+			else if (j == 1) {
+				laneType = Lane::MID;
+				bluePos = { 300.0f, 12.0f, 300.0f };
+				redPos = { 1883.0f,12.0f,1906.0f };
+			}
+			else if (j == 2) {
+				laneType = Lane::BOTTOM;
+				bluePos = { 292.0f, 12.0f, 191.0f };
+				redPos = { 2013.0f,12.0f,1911.0f };
+			}
+			{
+				if (laneType == Lane::END) laneType = Lane::TOP;
+
+				cout << "블루 미니언 생성" << endl;
+				MinionRef minionRef = MakeShared<Minion>();
+				_blueMinions[minionRef->GetObjectId()] = minionRef;
+
+				//ObjectInfo 설정
+				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+				ObjectMove::Pos pos = bluePos;
+				UINT CCType = CC::NO_CC;
+				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::BLUE, laneType, objectMove);
+
+				//패킷 생성
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+				Broadcast(sendBuffer, nullptr);
+			}
+			{
+				cout << "레드 미니언 생성" << endl;
+				MinionRef minionRef = MakeShared<Minion>();
+				_redMinions[minionRef->GetObjectId()] = minionRef;
+
+				//ObjectInfo 설정
+				ObjectInfo& objectInfo = minionRef->GetObjectInfo();
+				ObjectMove::MoveDir moveDir = { 10.f,10.f,10.f };
+				ObjectMove::Pos pos = redPos;
+				UINT CCType = CC::NO_CC;
+				ObjectMove objectMove(1, 100.f, 100.f, 10.f, 20.f, 100.f, 100.f, false, moveDir, pos, CCType);
+				SetObjectInfo(objectInfo, minionRef->GetObjectId(), UnitType::RANGED_MINION, Faction::RED, laneType, objectMove);
+
+
+				PKT_S_SPAWN_OBJECT_WRITE pktWriter(objectInfo);
+				SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+				Broadcast(sendBuffer, nullptr);
+			}
+		}
+		Sleep(1000);
+	}
 
 	cout << "미니언 생성 패킷을 다 보냄" << endl;
 
 	////5000을 바꾸면 리스폰 시간이 변경됩니다.
 	// 사용시 주석을 해제해주세요.
 	if (GetPlayerSize() > 0) {
-		thread t3(std::bind(&Room::MinionSpawn, this, 1000, 10000));
+		thread t3(std::bind(&Room::MinionSpawn, this, 1000, 30000));
 		t3.detach();
 	}
 }
