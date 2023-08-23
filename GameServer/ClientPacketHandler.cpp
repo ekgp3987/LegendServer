@@ -92,7 +92,7 @@ void ClientPacketHandler::Handle_C_LOGIN(PacketSessionRef& session, BYTE* buffer
 		resultNickName.push_back(nickname.nickname);
 	}
 	
-	wcout << "닉네임은 " << resultNickName << "입니다." << endl;
+	//wcout << "닉네임은 " << resultNickName << "입니다." << endl;
 
 	bool success = true;
 	Faction faction = Faction::BLUE;
