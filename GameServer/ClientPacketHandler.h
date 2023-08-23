@@ -47,6 +47,12 @@ enum
 
 	C_OBJECT_MTRL = 27,
 	S_OBJECT_MTRL = 28,
+
+	C_CHAT = 29,
+	S_CHAT = 30,
+
+	C_EFFECT = 31,
+	S_EFFECT = 32,
 };
 
 class ClientPacketHandler
@@ -65,7 +71,8 @@ public:
 	static void Handle_C_KDA_CS(PacketSessionRef& session, BYTE* buffer, int32 len);
 	static void Handle_C_SOUND(PacketSessionRef& session, BYTE* buffer, int32 len);
 	static void Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* buffer, int32 len);
-
+	static void Handle_C_CHAT(PacketSessionRef& session, BYTE* buffer, int32 len);
+	static void Handle_C_EFFECT(PacketSessionRef& session, BYTE* buffer, int32 len);
 private:
 	USE_LOCK;
 };
@@ -944,6 +951,204 @@ struct PKT_S_OBJECT_MTRL {
 };
 #pragma pack()
 
+#pragma pack(1)
+struct PKT_C_CHAT
+{
+	struct ChatLogStruct {
+		wchar_t chatLog;  // chat log
+	};
+
+	uint16  packetSize;
+	uint16  packetId;
+	uint64  ownerId;     // chat user id
+
+	uint16	chatLogOffset;
+	uint16	chatLogCount;
+
+	bool Validate() {
+		{
+			uint32 size = 0;
+			size += sizeof(PKT_C_CHAT);
+			if (packetSize < size)
+				return false;
+
+			if (chatLogOffset + chatLogCount * sizeof(BYTE) * 2 > packetSize)
+				return false;
+
+			size += chatLogCount * sizeof(BYTE) * 2;
+
+			ChatLog chatLog = GetChatLog();
+
+			if (size != packetSize)
+				return false;
+
+			return true;
+		}
+	}
+	using ChatLog = PacketList<ChatLogStruct>;
+	ChatLog GetChatLog()
+	{
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += chatLogOffset;
+		return ChatLog(reinterpret_cast<PKT_C_CHAT::ChatLogStruct*>(data), chatLogCount);
+	}
+};
+#pragma pack()
+
+#pragma pack(1)
+struct PKT_S_CHAT
+{
+	struct ChatLogStruct {
+		wchar_t chatLog;  // chat log
+	};
+
+	uint16  packetSize;
+	uint16  packetId;
+	uint64  ownerId;     // chat user id
+
+	uint16	chatLogOffset;
+	uint16	chatLogCount;
+
+	bool Validate() {
+		{
+			uint32 size = 0;
+			size += sizeof(PKT_S_CHAT);
+			if (packetSize < size)
+				return false;
+
+			if (chatLogOffset + chatLogCount * sizeof(BYTE) * 2 > packetSize)
+				return false;
+
+			size += chatLogCount * sizeof(BYTE) * 2;
+
+			ChatLog chatLog = GetChatLog();
+
+			if (size != packetSize)
+				return false;
+
+			return true;
+		}
+	}
+	using ChatLog = PacketList<ChatLogStruct>;
+	ChatLog GetChatLog()
+	{
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += chatLogOffset;
+		return ChatLog(reinterpret_cast<PKT_S_CHAT::ChatLogStruct*>(data), chatLogCount);
+	}
+};
+#pragma pack()
+
+#pragma pack(1)
+struct PKT_C_EFFECT
+{
+	struct vec3Server
+	{
+		float x;
+		float y;
+		float z;
+	};
+
+	struct PrefabNameStruct {
+		wchar_t prefabName;  // prefab name
+	};
+
+	// (wstring(프리팹이름), lifespan, spawn pos, spawn dir) (서버id 필요X)
+	uint16  packetSize;
+	uint16  packetId;
+	float   Lifespan;
+	vec3Server Pos;
+	vec3Server Dir;
+
+	uint16	prefabNameOffset;
+	uint16	prefabNameCount;
+
+	bool Validate() {
+		{
+			uint32 size = 0;
+			size += sizeof(PKT_C_EFFECT);
+			if (packetSize < size)
+				return false;
+
+			if (prefabNameOffset + prefabNameCount * sizeof(BYTE) * 2 > packetSize)
+				return false;
+
+			size += prefabNameCount * sizeof(BYTE) * 2;
+
+			PrefabName prefabName = GetPrefabName();
+
+			if (size != packetSize)
+				return false;
+
+			return true;
+		}
+	}
+	using PrefabName = PacketList<PrefabNameStruct>;
+	PrefabName GetPrefabName()
+	{
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += prefabNameOffset;
+		return PrefabName(reinterpret_cast<PKT_C_EFFECT::PrefabNameStruct*>(data), prefabNameCount);
+	}
+
+};
+#pragma pack()
+
+#pragma pack(1)
+struct PKT_S_EFFECT
+{
+
+	struct vec3Server
+	{
+		float x;
+		float y;
+		float z;
+	};
+
+	struct PrefabNameStruct {
+		wchar_t prefabName;  // prefab name
+	};
+
+	// (wstring(프리팹이름), lifespan, spawn pos, spawn dir) (서버id 필요X)
+	uint16  packetSize;
+	uint16  packetId;
+	float   Lifespan;
+	vec3Server Pos;
+	vec3Server Dir;
+
+	uint16	prefabNameOffset;
+	uint16	prefabNameCount;
+
+	bool Validate() {
+		{
+			uint32 size = 0;
+			size += sizeof(PKT_S_EFFECT);
+			if (packetSize < size)
+				return false;
+
+			if (prefabNameOffset + prefabNameCount * sizeof(BYTE) * 2 > packetSize)
+				return false;
+
+			size += prefabNameCount * sizeof(BYTE) * 2;
+
+			PrefabName prefabName = GetPrefabName();
+
+			if (size != packetSize)
+				return false;
+
+			return true;
+		}
+	}
+	using PrefabName = PacketList<PrefabNameStruct>;
+	PrefabName GetPrefabName()
+	{
+		BYTE* data = reinterpret_cast<BYTE*>(this);
+		data += prefabNameOffset;
+		return PrefabName(reinterpret_cast<PKT_S_EFFECT::PrefabNameStruct*>(data), prefabNameCount);
+	}
+
+};
+#pragma pack()
 //===============================
 // 이 밑은 패킷 Write 클래스 모음입니다. |
 // ==============================
@@ -1688,6 +1893,99 @@ private:
 #pragma pack()
 
 
+#pragma pack(1)
+class PKT_S_CHAT_WRITE
+{
+public:
+	using ChatLogStruct = PKT_S_CHAT::ChatLogStruct;
+	using ChatLog = PacketList<PKT_S_CHAT::ChatLogStruct>;
+
+	PKT_S_CHAT_WRITE(uint64 _userId)
+	{
+		_sendBuffer = GSendBufferManager->Open(4096);
+		// 초기화
+		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
+
+		_pkt = _bw.Reserve<PKT_S_CHAT>();
+		_pkt->packetSize = 0; // To Fill
+		_pkt->packetId = S_CHAT;
+		_pkt->ownerId = _userId;
+		_pkt->chatLogOffset = 0;
+		_pkt->chatLogCount = 0;
+	}
+
+	ChatLog ReserveChatLog(uint16 buffCount) {
+		ChatLogStruct* firstBuffsListItem = _bw.Reserve<ChatLogStruct>(buffCount);
+		_pkt->chatLogOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
+		_pkt->chatLogCount = buffCount;
+		return ChatLog(firstBuffsListItem, buffCount);
+	}
+
+	SendBufferRef CloseAndReturn()
+	{
+		// 패킷 사이즈 계산
+		_pkt->packetSize = _bw.WriteSize();
+
+		_sendBuffer->Close(_bw.WriteSize());
+		return _sendBuffer;
+	}
+
+private:
+	PKT_S_CHAT* _pkt = nullptr;
+	SendBufferRef _sendBuffer;
+	BufferWriter _bw;
+};
+#pragma pack()
+
+#pragma pack(1)
+class PKT_S_EFFECT_WRITE
+{
+public:
+	using PrefabNameStruct = PKT_S_EFFECT::PrefabNameStruct;
+	using PrefabName = PacketList<PKT_S_EFFECT::PrefabNameStruct>;
+
+	PKT_S_EFFECT_WRITE(float lifespan, PKT_C_EFFECT::vec3Server pos, PKT_C_EFFECT::vec3Server dir)
+	{
+		_sendBuffer = GSendBufferManager->Open(4096);
+		// 초기화
+		_bw = BufferWriter(_sendBuffer->Buffer(), _sendBuffer->AllocSize());
+
+		_pkt = _bw.Reserve<PKT_S_EFFECT>();
+		_pkt->packetSize = 0; // To Fill
+		_pkt->packetId = S_EFFECT;
+		_pkt->Lifespan = lifespan;
+		_pkt->Pos.x = pos.x;
+		_pkt->Pos.y = pos.y;
+		_pkt->Pos.z = pos.z;
+		_pkt->Dir.x = dir.x;
+		_pkt->Dir.y = dir.y;
+		_pkt->Dir.z = dir.z;
+		_pkt->prefabNameOffset = 0;
+		_pkt->prefabNameCount = 0;
+	}
+
+	PrefabName ReservePrefabName(uint16 buffCount) {
+		PrefabNameStruct* firstBuffsListItem = _bw.Reserve<PrefabNameStruct>(buffCount);
+		_pkt->prefabNameOffset = (uint64)firstBuffsListItem - (uint64)_pkt;
+		_pkt->prefabNameCount = buffCount;
+		return PrefabName(firstBuffsListItem, buffCount);
+	}
+
+	SendBufferRef CloseAndReturn()
+	{
+		// 패킷 사이즈 계산
+		_pkt->packetSize = _bw.WriteSize();
+
+		_sendBuffer->Close(_bw.WriteSize());
+		return _sendBuffer;
+	}
+
+private:
+	PKT_S_EFFECT* _pkt = nullptr;
+	SendBufferRef _sendBuffer;
+	BufferWriter _bw;
+};
+#pragma pack()
 
 
 
@@ -1758,3 +2056,4 @@ private:
 	BufferWriter _bw;
 };
 #pragma pack()
+

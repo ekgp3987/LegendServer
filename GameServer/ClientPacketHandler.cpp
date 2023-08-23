@@ -60,6 +60,12 @@ void ClientPacketHandler::HandlePacket(PacketSessionRef& session, BYTE* buffer, 
 	case C_OBJECT_MTRL:
 		Handle_C_OBJECT_MTRL(session, buffer, len);
 		break;
+	case C_CHAT:
+		Handle_C_CHAT(session, buffer, len);
+		break;
+	case C_EFFECT:
+		Handle_C_EFFECT(session, buffer, len);
+		break;
 	default:
 		break;
 	}
@@ -520,6 +526,81 @@ void ClientPacketHandler::Handle_C_OBJECT_MTRL(PacketSessionRef& session, BYTE* 
 	PKT_S_OBJECT_MTRL_WRITE::MtrlNameList mtrlName = pktWriter.ReserveMtrlNameList(resultMtrlName.size());
 	for (int i = 0; i < resultMtrlName.size(); i++) {
 		mtrlName[i] = { resultMtrlName[i] };
+	}
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_CHAT(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "Handle_C_CHAT에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	BufferReader br(buffer, len);
+
+	PKT_C_CHAT* pkt = reinterpret_cast<PKT_C_CHAT*>(buffer);
+
+
+	if (pkt->Validate() == false)
+	{
+		cout << "Handle_C_CHAT Validate 실패" << endl;
+		return;
+	}
+
+	PKT_C_CHAT::ChatLog chatLogs = pkt->GetChatLog();
+
+	wstring resultChatLog = L"";
+	for (auto& chatLog : chatLogs) {
+		resultChatLog.push_back(chatLog.chatLog);
+	}
+
+	
+	PKT_S_CHAT_WRITE pktWriter(pkt->ownerId);
+	cout << "Owner의 아이디 : " << pkt->ownerId << endl;
+
+	PKT_S_CHAT_WRITE::ChatLog chatLog = pktWriter.ReserveChatLog(resultChatLog.size());
+	for (int i = 0; i < resultChatLog.size(); i++) {
+		chatLog[i] = { resultChatLog[i] };
+	}
+
+
+	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();
+
+	GRoom.Broadcast(sendBuffer, nullptr);
+}
+
+void ClientPacketHandler::Handle_C_EFFECT(PacketSessionRef& session, BYTE* buffer, int32 len)
+{
+	cout << "Handle_C_EFFECT에 진입" << endl;
+
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	BufferReader br(buffer, len);
+
+	PKT_C_EFFECT* pkt = reinterpret_cast<PKT_C_EFFECT*>(buffer);
+
+
+	if (pkt->Validate() == false)
+	{
+		cout << "Handle_C_EFFECT Validate 실패" << endl;
+		return;
+	}
+
+	PKT_C_EFFECT::PrefabName prefabNames = pkt->GetPrefabName();
+
+	wstring resultPrefabName = L"";
+	for (auto& prefabName : prefabNames) {
+		resultPrefabName.push_back(prefabName.prefabName);
+	}
+
+	PKT_S_EFFECT_WRITE pktWriter(pkt->Lifespan, pkt->Pos, pkt->Dir);
+	
+	PKT_S_EFFECT_WRITE::PrefabName prefabName = pktWriter.ReservePrefabName(resultPrefabName.size());
+	for (int i = 0; i < resultPrefabName.size(); i++) {
+		prefabName[i] = { resultPrefabName[i] };
 	}
 
 	SendBufferRef sendBuffer = pktWriter.CloseAndReturn();

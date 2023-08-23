@@ -179,16 +179,15 @@ void Room::GameStartSpawn(SendBufferRef _sendBuffer, uint64 milliSeconds, bool _
 		thread t2(std::bind(&Room::TimeThread, this));
 		t2.detach();
 
-		// 처음엔 미니언 X
-		// 그다음에 미니언 O
-		thread t3(std::bind(&Room::MinionSpawn, this, 1000, 1000));
+
+		thread t3(std::bind(&Room::MinionSpawn, this, 1000, 60000));
 		t3.detach();
 
 		Sleep(3000);
 		
-		for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
-			MonsterSpawn(100, (UnitType)i);
-		}	
+		//for (int i = (int)UnitType::SOUTH_GROMP; i <= (int)UnitType::BARON; i++) {
+		//	MonsterSpawn(100, (UnitType)i);
+		//}	
 
 		});
 
